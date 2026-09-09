@@ -1,0 +1,209 @@
+auto reload
+
+import:
+    org.json.simple.parser.JSONParser
+    org.json.simple.JSONObject
+
+    java.net.URI
+    java.net.http.HttpClient
+    java.net.http.HttpRequest
+    java.net.http.HttpResponse
+    
+    java.time.Duration
+    java.time.LocalDateTime
+    
+    java.util.concurrent.Executors
+    java.util.concurrent.ScheduledExecutorService
+    java.util.concurrent.TimeUnit
+    java.util.concurrent.atomic.AtomicBoolean
+
+
+# -- init --
+on load:
+    _set("GLOBAL-BEARER", "INSERT BEARER TOKEN HERE")
+
+    # web.mcsh.io
+    _createInstance_(_get("GLOBAL-BEARER"), "8000104e-b782-4aba-ab36-231ba42fb277", "castor")
+
+    # xxx.mcsh.io
+    _createInstance_(_get("GLOBAL-BEARER"), "b735c551-a96e-4985-a1ef-640d9ce88fe7", "carina")
+
+    # sky.mcsh.io
+    _createInstance_(_get("GLOBAL-BEARER"), "b6113f94-a60b-490f-8f42-953926dbf62d", "circe")
+
+    # kit.mcsh.io
+    _createInstance_(_get("GLOBAL-BEARER"), "13cb458a-74ca-4c2c-b6d4-093c51ee901f", "circe")
+
+    # cry.mcsh.io
+    _createInstance_(_get("GLOBAL-BEARER"), "1b405cb9-3aeb-4008-abd3-834cf2c08c23", "chiron")
+
+    # mix.mcsh.io
+    _createInstance_(_get("GLOBAL-BEARER"), "ba15b843-da6e-4052-8c15-35caa6e99209", "carina")
+
+    # ffa.mcsh.io
+    _createInstance_(_get("GLOBAL-BEARER"), "3696f5c5-d9b5-444c-b8ff-96ed95f8cf46", "castor")
+    
+    # hub bla bla bla bla .mcsh.io
+    _createInstance_(_get("GLOBAL-BEARER"), "08adda7e-d3bf-4da8-83b0-c5e2167298c9", "corvus")
+
+
+# -- helpers --
+local function _get(k: text) :: object:
+    return {-KEEPALIVE::%{_k}%}
+
+local function _set(k: text, v: object) :: object:
+    set {-KEEPALIVE::%{_k}%} to {_v}
+
+local function _log(message: object, type: text = "INFO") :: object:
+    # stop # uncomment for verbose info
+    async run 0 ticks later:
+        send raw "[KEEPALIVE] [%{_type}%] %{_message}%" to console
+
+
+local function _getInstance(instanceId: text, key: text) :: object:
+    return {-KEEPALIVE::instances::%{_instanceId}%::%{_key}%}
+
+local function _setInstance(instanceId: text, key: text, value: object) :: object:
+    set {-KEEPALIVE::instances::%{_instanceId}%::%{_key}%} to {_value}
+
+
+# -- loop logic --
+local function _loop_(id: string, execute: string, interval: timespan = 1 seconds, index: number = random integer between 0 and 9999, data: string = "start", instanceId: string = ""):
+    set {_x} to "HEARTBEAT/%{_id}%"
+    _log("Active Heartbeat ID: %_get({_x})%")
+
+    if {_data} is "start":
+        _set({_x}, {_index})
+        # store the instanceId in the loop's own state (global, but tied to loop ID)
+        _set("INSTANCE_OF/%{_id}%", {_instanceId})
+
+    else if {_data} is "stop":
+        _set({_x}, 0)
+        stop
+
+    if _get("HEARTBEAT/%{_id}%") is not {_index}:
+        _log("Heartbeat ID: %{_id}% changed index! (%{_index}% -> %_get({_x})%)", "WARN")
+        stop
+
+    # Retrieve the instanceId that belongs to this loop
+    set {_instance} to _get("INSTANCE_OF/%{_id}%")
+    if {_instance} is not set:
+        _log("No instance found for loop %{_id}%, stopping", "ERROR")
+        stop
+
+    # Execute the given function, passing the instanceId as argument
+    replace all "(", ")" with "" in {_execute}
+    eval "%{_execute}%(""%{_instance}%"")" as console
+
+    wait for {_interval}
+    _loop_({_id}, {_execute}, {_interval}, {_index}, "loop", {_instance})
+
+
+# -- heartbeat --
+function _beat_(instanceId: text):
+    async run 0 ticks later:
+        fetchToken({_instanceId})
+        callPowerAction({_instanceId}, "start")
+
+
+# -- instance builder --
+local function _createInstance_(bearer: text, uuid: text, nodename: text) :: object:
+    # Use the UUID as the instance identifier
+    set {_id} to {_uuid}
+
+    # Store all configuration under this instance ID
+    _setInstance({_id}, "REST_API_TOKEN", {_bearer})
+    _setInstance({_id}, "SERVER_UUID", {_uuid})
+    _setInstance({_id}, "NODE_NAME", {_nodename})
+    _setInstance({_id}, "WS_URL", "wss://%{_nodename}%.mcserverhost.com:8080/api/servers/%{_uuid}%/ws")
+    _setInstance({_id}, "POWER_API_URL", "https://api.mcserverhost.com/user/servers/%{_uuid}%/power")
+    _setInstance({_id}, "TOKEN_API_URL", "https://api.mcserverhost.com/user/servers/%{_uuid}%/ws")
+
+    # Per‑instance state
+    _setInstance({_id}, "wsClient", {_})
+    _setInstance({_id}, "isAuth", false)
+    _setInstance({_id}, "lastState", {_})
+    _setInstance({_id}, "currentToken", {_})
+    _setInstance({_id}, "scheduler", Executors.newScheduledThreadPool(3))
+    _setInstance({_id}, "httpClient", HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build())
+
+    # Start the heartbeat loop for this instance
+    _loop_("KEEPALIVE_%{_id}%", "_beat_", 5 seconds, random integer between 0 and 9999, "start", {_id})
+
+    # Initial fetch & power‑on
+    async run 0 ticks later:
+        fetchToken({_id})
+        callPowerAction({_id}, "start")
+
+    _log("✅ Instance created for UUID %{_uuid}% (node: %{_nodename}%)")
+
+
+# -- token fetch --
+local function fetchToken(instanceId: text) :: object:
+    _log("Fetching fresh token for instance %{_instanceId}%...")
+
+    set {_httpClient} to _getInstance({_instanceId}, "httpClient")
+    set {_tokenApiUrl} to _getInstance({_instanceId}, "TOKEN_API_URL")
+    set {_restToken} to _getInstance({_instanceId}, "REST_API_TOKEN")
+
+    _setInstance({_instanceId}, "request", HttpRequest.newBuilder())
+    _setInstance({_instanceId}, "request", _getInstance({_instanceId}, "request").uri(URI.create({_tokenApiUrl})))
+    _setInstance({_instanceId}, "request", _getInstance({_instanceId}, "request").header("Accept", "application/json, text/plain, */*"))
+    _setInstance({_instanceId}, "request", _getInstance({_instanceId}, "request").header("Authorization", "Bearer %{_restToken}%"))
+    _setInstance({_instanceId}, "request", _getInstance({_instanceId}, "request").header("Origin", "https://www.mcserverhost.com"))
+    _setInstance({_instanceId}, "request", _getInstance({_instanceId}, "request").GET().build())
+
+    _setInstance({_instanceId}, "response", {_httpClient}.send(_getInstance({_instanceId}, "request"), HttpResponse.BodyHandlers.ofString()))
+
+    if _getInstance({_instanceId}, "response").statusCode() is not 200:
+        _log("HTTP %_getInstance({_instanceId}, "response").statusCode()% for instance %{_instanceId}%", "ERROR")
+
+    _setInstance({_instanceId}, "parser", new JSONParser())
+    _setInstance({_instanceId}, "json", _getInstance({_instanceId}, "parser").parse(_getInstance({_instanceId}, "response").body()))
+    _setInstance({_instanceId}, "token", _getInstance({_instanceId}, "json").get("token").toString())
+
+    if all:
+        _getInstance({_instanceId}, "token") is set
+        _getInstance({_instanceId}, "token").length() > 10
+    then:
+        _setInstance({_instanceId}, "currentToken", _getInstance({_instanceId}, "token"))
+        _log("✅ Token updated for instance %{_instanceId}%.")
+        return true
+    else:
+        _log("❌ Token fetch failed for instance %{_instanceId}%.", "ERROR")
+        return false
+
+
+# -- power action --
+local function callPowerAction(instanceId: text, action: text) :: object:
+    _log("Sending power action '%{_action}%' for instance %{_instanceId}%")
+
+    set {_body} to new JSONObject()
+    {_body}.put("action", {_action})
+    {_body}.put("wait_seconds", 0)
+
+    set {_httpClient} to _getInstance({_instanceId}, "httpClient")
+    set {_powerApiUrl} to _getInstance({_instanceId}, "POWER_API_URL")
+    set {_restToken} to _getInstance({_instanceId}, "REST_API_TOKEN")
+
+    _setInstance({_instanceId}, "request", HttpRequest.newBuilder())
+    _setInstance({_instanceId}, "request", _getInstance({_instanceId}, "request").uri(URI.create({_powerApiUrl})))
+    _setInstance({_instanceId}, "request", _getInstance({_instanceId}, "request").header("Authorization", "Bearer %{_restToken}%"))
+    _setInstance({_instanceId}, "request", _getInstance({_instanceId}, "request").header("Content-Type", "application/json"))
+    _setInstance({_instanceId}, "request", _getInstance({_instanceId}, "request").header("Accept", "application/json"))
+    _setInstance({_instanceId}, "request", _getInstance({_instanceId}, "request").header("Origin", "https://www.mcserverhost.com"))
+    _setInstance({_instanceId}, "request", _getInstance({_instanceId}, "request").POST(HttpRequest.BodyPublishers.ofString({_body}.toString())))
+    _setInstance({_instanceId}, "request", _getInstance({_instanceId}, "request").build())
+
+    _setInstance({_instanceId}, "response", {_httpClient}.send(_getInstance({_instanceId}, "request"), HttpResponse.BodyHandlers.ofString()))
+
+    if all:
+        _getInstance({_instanceId}, "response").statusCode() >= 200
+        _getInstance({_instanceId}, "response").statusCode() < 300
+    then:
+        _log("Power action '%{_action}%' successful for instance %{_instanceId}%.")
+    else:
+        _log("Power action '%{_action}%' failed for instance %{_instanceId}%: %_getInstance({_instanceId}, "response").statusCode()% %_getInstance({_instanceId}, "response").body()%", "ERROR")
+    
+
+    
