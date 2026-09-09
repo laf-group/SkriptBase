@@ -1,0 +1,60 @@
+bearer: default bearer token here
+
+instances:
+    # id:
+    #     enable: true # disable for maintenance
+    #     node: example # node name id
+    #     uuid: 00000000-0000-0000-0000-000000000000 # server uuid
+    #     bearer: override bearer token
+    #     verbose: false # debug purposes
+        
+    web.mcsh.io:
+        enable: true
+        node: castor
+        uuid: 8000104e-b782-4aba-ab36-231ba42fb277
+
+    # Development server
+    xxx.mcsh.io:
+        enable: true
+        node: carina
+        uuid: b735c551-a96e-4985-a1ef-640d9ce88fe7
+
+    # Development server
+    sky.mcsh.io:
+        enable: true
+        node: circe
+        uuid: b6113f94-a60b-490f-8f42-953926dbf62d
+        
+    kit.mcsh.io:
+        enable: true
+        node: circe
+        uuid: 13cb458a-74ca-4c2c-b6d4-093c51ee901f
+
+    # Linux Experimental
+    cry.mcsh.io:
+        enable: true
+        node: chiron
+        uuid: 1b405cb9-3aeb-4008-abd3-834cf2c08c23
+
+    mix.mcsh.io:
+        enable: true
+        node: carina
+        uuid: ba15b843-da6e-4052-8c15-35caa6e99209
+
+    # WhyssFFA
+    ffa.mcsh.io:
+        enable: true
+        node: castor
+        uuid: 3696f5c5-d9b5-444c-b8ff-96ed95f8cf46
+
+    # Velocity Hub
+    hubs.mcsh.io:
+        enable: true
+        node: cratos
+        uuid: ce274f34-40dd-44d6-b5ab-cab66c33bfd2
+        
+    whysshub:
+        enable: true
+        node: corvus
+        uuid: 08adda7e-d3bf-4da8-83b0-c5e2167298c9
+    
