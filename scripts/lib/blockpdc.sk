@@ -1,0 +1,73 @@
+auto reload
+
+expression:
+    patterns:
+        posdata tag %string% of %locations%
+        locdata tag %string% of %locations%
+        
+    get:
+        set {_tag} to expr-1
+        set {_pos::*} to expr-2
+        
+        set {_namespace} to "minecraft"
+        if {_tag} doesn't match "^[A-Za-z0-9/_\-.]+$":
+            throw runtime error formatted "[POSDATA] A namespaced key can be formatted as 'namespace:id' or 'id'. It can only contain one ':' to separate the namespace and the id. Only alphanumeric characters, periods, underscores, and dashes can be used."
+            stop
+        
+        for {_pos} in {_pos::*}:
+            set {_chunk} to chunk of {_pos}
+            
+            set {_x} to x of (center of location of {_pos})
+            set {_y} to y of (center of location of {_pos})
+            set {_z} to z of (center of location of {_pos})
+            
+            set {_prefix} to "%{_x}%_%{_y}%_%{_z}%"
+            set {_data} to (data tag "%{_prefix}%:%{_tag}%" of {_chunk})
+            add {_data} to {_return::*}
+            
+        return {_return::*}
+    
+    set:
+        set {_tag} to expr-1
+        set {_pos::*} to expr-2
+        
+        set {_namespace} to "minecraft"
+        if {_tag} doesn't match "^[A-Za-z0-9/_\-.]+$":
+            throw runtime error formatted "[POSDATA] A namespaced key can be formatted as 'namespace:id' or 'id'. It can only contain one ':' to separate the namespace and the id. Only alphanumeric characters, periods, underscores, and dashes can be used."
+            stop
+        
+        for {_pos} in {_pos::*}:
+            set {_chunk} to chunk of {_pos}
+            
+            set {_x} to x of (center of location of {_pos})
+            set {_y} to y of (center of location of {_pos})
+            set {_z} to z of (center of location of {_pos})
+            
+            set {_prefix} to "%{_x}%_%{_y}%_%{_z}%"
+            set (data tag "%{_prefix}%:%{_tag}%" of {_chunk}) to change value
+
+            broadcast {_prefix}
+            
+        stop
+
+    delete:
+        set {_tag} to expr-1
+        set {_pos::*} to expr-2
+        
+        set {_namespace} to "minecraft"
+        if {_tag} doesn't match "^[A-Za-z0-9/_\-.]+$":
+            throw runtime error formatted "[POSDATA] A namespaced key can be formatted as 'namespace:id' or 'id'. It can only contain one ':' to separate the namespace and the id. Only alphanumeric characters, periods, underscores, and dashes can be used."
+            stop
+        
+        for {_pos} in {_pos::*}:
+            set {_chunk} to chunk of {_pos}
+            
+            set {_x} to x of (center of location of {_pos})
+            set {_y} to y of (center of location of {_pos})
+            set {_z} to z of (center of location of {_pos})
+            
+            set {_prefix} to "%{_x}%_%{_y}%_%{_z}%"
+            delete (data tag "%{_prefix}%:%{_tag}%" of {_chunk})
+            
+        stop
+        
