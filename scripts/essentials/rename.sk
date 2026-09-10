@@ -1,0 +1,16 @@
+auto reload
+
+command /itemname [<name: text>]:
+    aliases: /iname
+    permission: module.essentials.rename
+    trigger:
+        if {_name} is not set:
+            send formatted "%{-c::prefix}% %{-c::r}%You need to provide a name!"
+            stop
+        
+        if player's tool is not set:
+            send formatted "%{-c::prefix}% %{-c::r}%You need to hold an item!"
+            stop
+
+        set name of player's tool to formatted {_name}
+        send formatted "%{-c::prefix}% %{-c::g}%Renamed your item to %{_name}%!"
