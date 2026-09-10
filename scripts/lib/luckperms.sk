@@ -1,0 +1,72 @@
+auto reload
+
+import:
+    net.luckperms.api.LuckPermsProvider
+    net.luckperms.api.model.user.User
+    net.luckperms.api.node.Node
+    net.luckperms.api.node.NodeType
+
+on load:
+    set {luckperms} to LuckPermsProvider.get()
+
+function perms(player: offline player, action: string = "set", node: string, value: boolean = true) :: string:
+    set {_uuid} to {_player}'s uuid
+    
+    if {luckperms}.getUserManager().isLoaded({_uuid}) is false:
+        {luckperms}.getUserManager().loadUser({_uuid})
+    
+    set {_user} to {luckperms}.getUserManager().getUser({_uuid})
+    
+    if {_user} is not set:
+        return "Error: Could not load user data."
+    
+    switch {_action}:
+        case "set" -> set {_result} to {_user}.data().add(Node.builder("%{_node}%").value({_value}).build())
+        case "remove" -> set {_result} to {_user}.data().remove(Node.builder("%{_node}%").build())
+        case "unset" -> set {_result} to {_user}.data().remove(Node.builder("%{_node}%").build())
+        
+    {luckperms}.getUserManager().saveUser({_user})
+
+    return "Player: %{_player}%. Action: %{_action}% Node: %{_node}%. Result: %{_result}%"
+            
+
+function asyncperms(player: offline player, action: string = "set", node: string, value: boolean = true) :: string:
+    async run 0 ticks later:
+        perms({_player}, {_action}, {_node}, {_value})
+
+
+function getprimarygroup(player: offline player) :: object:
+    set {_uuid} to {_player}'s uuid
+    
+    if {luckperms}.getUserManager().isLoaded({_uuid}) is false:
+        {luckperms}.getUserManager().loadUser({_uuid})
+    
+    set {_user} to {luckperms}.getUserManager().getUser({_uuid})
+    
+    if {_user} is not set:
+        return "Error: Could not load user data."
+    
+    set {_primaryGroup} to {_user}.getPrimaryGroup()
+    return {_primaryGroup}
+
+
+
+function luckpermsapi(x : string = "get()") :: object:
+    replace all "()" with "" in {_x}
+    if {_x} is "get":
+        return LuckPermsProvider.get()
+    else if {_x} is "Node":
+        return Node
+    else if {_x} is "NodeType":
+        return NodeType
+
+
+
+expression:
+    patterns:
+        primary group of %offline player%
+        %offline player%'[s] primary group
+    
+    get:
+        set {_player} to expr-1
+        return getprimarygroup({_player})
