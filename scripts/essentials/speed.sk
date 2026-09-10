@@ -1,0 +1,16 @@
+auto reload
+
+# FLY/WALKSPEED MODULE
+command /speed [<m: number = 1>]:
+    permission: *
+    trigger:
+        if command sender is not player:
+            send formatted "%{-c::prefix}% %{-c::r}%Can only be used by a player!" to command sender
+        
+        if player is flying:
+            set player's fly speed to ({_m} ? 1) * 0.1
+            send formatted "%{-c::prefix}% %{-c::g}%Flying speed set to %{_m}%!" to player
+            stop
+        
+        set player's walk speed to ({_m} ? 1) * 0.2
+        send formatted "%{-c::prefix}% %{-c::g}%Walking speed set to %{_m}%!" to player
