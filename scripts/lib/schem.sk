@@ -1,0 +1,50 @@
+auto reload
+
+import:
+    com.fastasyncworldedit.core.FaweAPI
+    com.sk89q.worldedit.WorldEdit
+    com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats
+    com.sk89q.worldedit.function.operation.Operations
+    com.sk89q.worldedit.math.BlockVector3
+    com.sk89q.worldedit.session.ClipboardHolder
+    java.io.File
+    java.io.FileInputStream
+
+# command /pasteSchem <schem: text>:
+#     permission: *
+#     trigger:
+#         pasteSchematicAsync({_schem}, player's location)
+
+# TODO:
+# - Delete clipboard data after session finished
+
+function pasteSchematicAsync(schematicName: text, loc: location):: object:
+    set {_file} to new File("plugins/FastAsyncWorldEdit/schematics/%{_schematicName}%.schem")
+    set {_world} to FaweAPI.getWorld({_loc}.getWorld().getName())  # get FAWE world
+
+    async run 0 tick later:
+        set {_format} to ClipboardFormats.findByFile({_file})
+        if {_format} is null:
+            stop
+        
+        set {_reader} to {_format}.getReader(new FileInputStream({_file}))
+        set {_clipboard} to {_reader}.read()
+        {_reader}.close()
+
+        set {_editSession} to WorldEdit.getInstance().newEditSessionBuilder()
+        set {_editSession} to {_editSession}.world({_world})
+        set {_editSession} to {_editSession}.build()
+
+        set {_vec} to BlockVector3.at({_loc}.getBlockX(), {_loc}.getBlockY(), {_loc}.getBlockZ())
+
+        set {_holder} to new ClipboardHolder({_clipboard})
+
+        set {_operation} to {_holder}.createPaste({_editSession})
+        set {_operation} to {_operation}.to({_vec})
+        set {_operation} to {_operation}.ignoreAirBlocks(false)
+        set {_operation} to {_operation}.copyEntities(true)
+        set {_operation} to {_operation}.copyBiomes(true)
+        set {_operation} to {_operation}.build()
+        
+        Operations.complete({_operation})
+        {_editSession}.close()
