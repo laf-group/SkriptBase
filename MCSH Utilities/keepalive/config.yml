@@ -7,10 +7,9 @@ instances:
     #     uuid: 00000000-0000-0000-0000-000000000000 # server uuid
     #     bearer: override bearer token
     #     verbose: false # debug purposes
-    # test
         
     web-mcsh-io:
-        enable: true
+        enable: false
         node: castor
         uuid: 8000104e-b782-4aba-ab36-231ba42fb277
 
@@ -22,7 +21,7 @@ instances:
 
     # Development server
     sky-mcsh-io:
-        enable: true
+        enable: false
         node: circe
         uuid: b6113f94-a60b-490f-8f42-953926dbf62d
         
