@@ -1,0 +1,16 @@
+auto reload
+
+# HEAL MODULE
+command /heal [<target: player>]:
+    permission: *
+    trigger:
+        heal {_target} ? player
+        send formatted "%{-c::prefix}% %{-c::g}%You've been healed!" to {_target} ? player
+
+
+# FEED MODULE
+command /feed [<target: player>]:
+    permission: *
+    trigger:
+        feed {_target} ? player
+        send formatted "%{-c::prefix}% %{-c::g}%You've been healed!" to {_target} ? player
