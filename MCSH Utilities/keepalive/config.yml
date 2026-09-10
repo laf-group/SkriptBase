@@ -8,7 +8,7 @@ instances:
     #     bearer: override bearer token
     #     verbose: false # debug purposes
         
-    web-mcsh-io:
+    modified-please-web-mcsh-io:
         enable: false
         node: castor
         uuid: 8000104e-b782-4aba-ab36-231ba42fb277
