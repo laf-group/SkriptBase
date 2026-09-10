@@ -100,7 +100,7 @@ function yml(path: string, key: string) returns object:
   return yaml({_path}, {_key})
 
 function yml(path: string, key: string, value: object) returns object:
-  return yaml({_path}, {_key}, {_value)
+  return yaml({_path}, {_key}, {_value})
 
 
 
