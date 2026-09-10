@@ -1,0 +1,36 @@
+auto reload
+
+on load:
+    set {_normal::*} to "ABCDEFGHIJKLMNOPQRSTUVWXYZ" split at ""
+    set {_small::*} to "ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘꞯʀꜱᴛᴜᴠᴡxʏᴢ" split at ""
+
+    for {_idx} in numbers between 1 and (size of {_normal::*}):
+        set {_n} to {_normal::%{_idx}%}
+        set {_s} to {_small::%{_idx}%}
+        set {-SMALLCAPS::%{_n}%} to {_s}
+
+
+# (%text%|%texts%) in small[ ]ca(ps|se)
+expression:
+    patterns:
+        %texts% in smallcaps
+        %texts% in small caps
+        %texts% in smallcase
+        %texts% in small case
+        %text% in smallcaps
+        %text% in small caps
+        %text% in smallcase
+        %text% in small case
+    get:
+        add expr-1 to {_txt::*}
+
+        set {_result::*} to {_}
+        for {_txt} in {_txt::*}:
+            set {_small::*} to {_}
+
+            for {_t} in {_txt} split at "":
+                add {-SMALLCAPS::%{_t} in uppercase%} ? {_t} to {_small::*}
+
+            add join {_small::*} with "" to {_result::*}
+        
+        return {_result::*}
