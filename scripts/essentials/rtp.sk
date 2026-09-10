@@ -1,0 +1,23 @@
+auto reload
+
+command /rtp:
+    aliases: /randomtp, /randomteleport
+    trigger:
+        # set {_w} to world of player
+        # if {_w} is not "world":
+        #     send formatted "%{-c::prefix}% %{-c::r}%You cannot RTP in this world!"
+        #     stop
+        
+        set {_w} to world "world"
+
+        set {_x} to random integer between -2000 and 2000
+        set {_y} to 0
+        set {_z} to random integer between -2000 and 2000
+
+        set {_pitch} to pitch of player
+        set {_yaw} to yaw of player
+
+        set {_loc} to (highest solid block at location({_x}, {_y}, {_z}, {_w})) ~ vector(0,1,0)
+
+        teleport player to {_loc}
+        send formatted "%{-c::prefix}% %{-c::w}%You have been randomly teleported!"
