@@ -1,0 +1,53 @@
+auto reload
+
+on tab complete of "/tp":
+    player has permission "*"
+    set tab completions for position 1 to all players
+
+
+command /tp [<target: text>]:
+    permission: *
+    trigger:
+        if {_target} contains " ":
+            set {_x} to 1st element of (split {_target} at " ") parsed as number
+            set {_y} to 2nd element of (split {_target} at " ") parsed as number
+            set {_z} to 3rd element of (split {_target} at " ") parsed as number
+        
+            set {_destination} to location({_x}, {_y}, {_z}, player's world)
+            if {_destination} is not set:
+                send formatted "%{-c::prefix}% %{-c::r}%Invalid coordinate!" to player
+                stop
+            
+            send formatted "%{-c::prefix}% %{-c::g}%Teleported to %{_destination}%!" to player
+            
+            set yaw of {_destination} to player's yaw
+            set pitch of {_destination} to player's pitch
+            teleport player to {_destination}
+            
+        else if {_target} parsed as player is set:
+            set {_target} to {_target} parsed as player
+            
+            send formatted "%{-c::prefix}% %{-c::g}%Teleported to %{_target}%!" to player
+            
+            if {_target} is not player:
+                set {_destination} to {_target}'s location
+            else:
+                set {_destination} to center of {_target}'s location
+                
+            set yaw of {_destination} to player's yaw
+            set pitch of {_destination} to player's pitch
+            teleport player to {_destination}
+        
+        else:
+            send formatted "%{-c::prefix}% %{-c::r}%Invalid argument!" to player
+
+
+command /tphere <target: player>:
+    permission: *
+    trigger:
+        set {_destination} to player's location
+        set yaw of {_destination} to player's yaw
+        set pitch of {_destination} to player's pitch
+
+        teleport {_target} to {_destination}
+        send formatted "%{-c::prefix}% %{-c::g}%Teleported %{_target}% to you!" to player
