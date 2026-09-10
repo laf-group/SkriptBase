@@ -1,4 +1,4 @@
-bearer: default bearer token here
+bearer: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjExNDcwOTcsInVzZXJuYW1lIjoiQ3VzdG9tIE1hbmlhYyIsImFkbWluIjpmYWxzZSwiZXhwIjoxNzg5Mzg2MTU3LCJ0eXBlIjoiYWNjZXNzIn0.2H4PKGDbqOQ7SubjhHOvwjCuCO11EcCToftTPKm2grs
 
 instances:
     # id:
