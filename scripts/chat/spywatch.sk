@@ -1,0 +1,214 @@
+auto reload
+
+# TO-DO:
+# - Remake everything
+
+options:
+    # Configs
+    CommandMain: commandwatch
+    CommandAliases: cw, commandspy
+
+    CommandSpy: superspy
+    CommandAliasesSpy: spymode, chatspy
+    
+    Prefix: &8&l[&3&lC&b&lW&8&l]&r
+    PrefixSpy: &8&l[&9&lSPY&8&l]&r
+
+    Treshold: 642
+    Filter: >>
+    Msg: &7Executing
+
+    MessageEnable: &7Command Watch has been &aEnabled
+    MessageEnableAlready: &7Command Watch already enabled.
+    MessageEnableTarget: &7Command Watch for &b%{_target}%&7 has been &aEnabled
+    MessageEnableAlreadyTarget: &7Command Watch for &b%{_target}% &7already enabled.
+    MessageDisable: &7Command Watch has been &cDisabled
+    MessageDisableAlready: &7Command Watch already disabled.
+    MessageDisableTarget: &7Command Watch for &b%{_target}%&7 has been &cDisabled
+    MessageDisableAlreadyTarget: &7Command Watch for &b%{_target}% &7already disabled.
+    MessageHelp: &7Usage: &f/commandwatch &a<on|off|enable|disable|help> &b<player>
+
+    MessageEnableSpy: &7Super Spy has been &aEnabled
+    MessageEnableAlreadySpy: &7Super Spy already enabled.
+    MessageEnableTargetSpy: &7Super Spy for &b%{_target}%&7 has been &aEnabled
+    MessageEnableAlreadyTargetSpy: &7Super Spy for &b%{_target}% &7already enabled.
+    MessageDisableSpy: &7Super Spy has been &cDisabled
+    MessageDisableAlreadySpy: &7Super Spy already disabled.
+    MessageDisableTargetSpy: &7Super Spy for &b%{_target}%&7 has been &cDisabled
+    MessageDisableAlreadyTargetSpy: &7Super Spy for &b%{_target}% &7already disabled.
+    MessageHelpSpy: &7Usage: &f/superspy &a<on|off|enable|disable|help> &b<player>
+    
+    MessageNoPermission: &c&l(!) &cYou don't have access to that command.
+    MessageNoConsoleCommand: &c&l(!) &cThis command is unavailable for console.
+    MessageUnknownCommand: &c&l(!) &cYou entered invalid argument.
+
+    PermissionUse: module.chat.watch
+    PermissionUseSpy: module.chat.spy
+
+    variable: CommandWatch
+    variableSpy: SuperSpy
+
+on load:
+    ####################
+    ## SETTING MANUAL ##
+    ####################
+    
+    # General Feature, set to false to log every chat
+    # true -> All messages that atleast met 1 item from the list will be logged
+    set {-SpyFilter} to false
+    set {-SpyFilterList} to "hack hacker cheat cit flyhack fly citer gmc meteor wurst liquid bounce killaura hax download ghost vape"
+    
+    # Useful for anything suspicious (Macro attempt, Toggling, Shouting)
+    # true -> All messages starts with item in the list will be logged
+    set {-SpyPrefixed} to true
+    set {-SpyPrefixedList} to ". ! \ - @ # $ * ^ & ; : > ?"
+
+# /commandwatch <on|off|enable|disable|help> <player>
+command /{@CommandMain} [<text>] [<offline player>]:
+    aliases: {@CommandAliases}
+    trigger:
+        command sender is console:
+            send formatted "{@MessageNoConsoleCommand}"
+            stop
+        player doesn't have permission "{@PermissionUse}":
+            send formatted "{@MessageNoPermission}"
+            stop
+        arg 1 is not set:
+            {{@variable}::%player%::status} is not set:
+                set {{@variable}::%player%::status} to true
+                send formatted "{@Prefix} {@MessageEnable}"
+                stop
+            delete {{@variable}::%player%::status}
+            send formatted "{@Prefix} {@MessageDisable}"
+        else:
+            arg 1 = "on" or "off" or "enable" or "disable" or "help":
+                arg 1 = "on" or "enable":
+                    arg 2 is not set:
+                        {{@variable}::%player%::status} is not set:
+                            set {{@variable}::%player%::status} to true
+                            send formatted "{@Prefix} {@MessageEnable}"
+                            stop
+                        send formatted "{@Prefix} {@MessageEnableAlready}"
+                    else:
+                        set {_target} to arg 2
+                        {{@variable}::%{_target}%::status} is not set:
+                            set {{@variable}::%{_target}%::status} to true
+                            send formatted "{@Prefix} {@MessageEnableTarget}"
+                            stop
+                        send formatted "{@Prefix} {@MessageEnableAlreadyTarget}"
+                arg 1 = "off" or "disable":
+                    arg 2 is not set:
+                        {{@variable}::%player%::status} is set:
+                            delete {{@variable}::%player%::status}
+                            send formatted "{@Prefix} {@MessageDisable}"
+                            stop
+                        send formatted "{@Prefix} {@MessageDisableAlready}"
+                    else:
+                        set {_target} to arg 2
+                        {{@variable}::%{_target}%::status} is set:
+                            delete {{@variable}::%{_target}%::status}
+                            send formatted "{@Prefix} {@MessageDisableTarget}"
+                            stop
+                        send formatted "{@Prefix} {@MessageDisableAlreadyTarget}"
+                arg 1 = "help":
+                    send formatted "{@Prefix} {@MessageHelp}"
+            else:
+                send formatted "{@MessageUnknownCommand}"
+
+
+# /superspy <on|off|enable|disable|help> <player>
+command /{@CommandSpy} [<text>] [<offline player>]:
+    aliases: {@CommandAliasesSpy}
+    trigger:
+        command sender is console:
+            send formatted "{@MessageNoConsoleCommand}"
+            stop
+        player doesn't have permission "{@PermissionUseSpy}":
+            send formatted "{@MessageNoPermission}"
+            stop
+        arg 1 is not set:
+            {{@variableSpy}::%player%::status} is not set:
+                set {{@variableSpy}::%player%::status} to true
+                send formatted "{@PrefixSpy} {@MessageEnableSpy}"
+                stop
+            delete {{@variableSpy}::%player%::status}
+            send formatted "{@PrefixSpy} {@MessageDisableSpy}"
+        else:
+            arg 1 = "on" or "off" or "enable" or "disable" or "help" or "disableGlobalFilter" or "enableGlobalFilter":
+                arg 1 = "on" or "enable":
+                    arg 2 is not set:
+                        {{@variableSpy}::%player%::status} is not set:
+                            set {{@variableSpy}::%player%::status} to true
+                            send formatted "{@PrefixSpy} {@MessageEnableSpy}"
+                            stop
+                        send formatted "{@PrefixSpy} {@MessageEnableAlreadySpy}"
+                    else:
+                        set {_target} to arg 2
+                        {{@variableSpy}::%{_target}%::status} is not set:
+                            set {{@variableSpy}::%{_target}%::status} to true
+                            send formatted "{@PrefixSpy} {@MessageEnableTargetSpy}"
+                            stop
+                        send formatted "{@PrefixSpy} {@MessageEnableAlreadyTargetSpy}"
+                arg 1 = "off" or "disable":
+                    arg 2 is not set:
+                        {{@variableSpy}::%player%::status} is set:
+                            delete {{@variableSpy}::%player%::status}
+                            send formatted "{@PrefixSpy} {@MessageDisableSpy}"
+                            stop
+                        send formatted "{@PrefixSpy} {@MessageDisableAlreadySpy}"
+                    else:
+                        set {_target} to arg 2
+                        {{@variableSpy}::%{_target}%::status} is set:
+                            delete {{@variableSpy}::%{_target}%::status}
+                            send formatted "{@PrefixSpy} {@MessageDisableTargetSpy}"
+                            stop
+                        send formatted "{@PrefixSpy} {@MessageDisableAlreadyTargetSpy}"
+                arg 1 = "help":
+                    send formatted "{@PrefixSpy} {@MessageHelpSpy}"
+                arg 1 = "disableGlobalFilter":
+                    set {-SpyFilter} to false
+                    send formatted "{@PrefixSpy} &7Super Spy Global Filter has been &cDisabled &7by &e%player%" to all players where [{{@variableSpy}::%input%::status} is set]
+                arg 1 = "enableGlobalFilter":
+                    set {-SpyFilter} to true
+                    send formatted "{@PrefixSpy} &7Super Spy Global Filter has been &aEnabled &7by &e%player%" to all players where [{{@variableSpy}::%input%::status} is set]
+            else:
+                send formatted "{@MessageUnknownCommand}"
+                
+                
+on join:
+    {{@variable}::%player%::status} is set:
+        player doesn't have permission "{@PermissionUse}":
+            delete {{@variable}::%player%::status}
+            send formatted "{@Prefix} {@MessageDisable}"
+
+    {{@variableSpy}::%player%::status} is set:
+        player doesn't have permission "{@PermissionUseSpy}":
+            delete {{@variableSpy}::%player%::status}
+            send formatted "{@PrefixSpy} {@MessageDisableSpy}"
+            
+            
+on chat with priority lowest:    
+    if {-SpyFilter} is true:
+        set {_filterList::*} to {-SpyFilterList} split at " " where [input is not "" or " "]
+        set {_done} to false
+        loop {_filterList::*}:
+            {_done} is false
+            message contains loop-value
+            send formatted "{@PrefixSpy} &8(%player's world%) &7%player%&7: &c%unformatted message%" to all players where [{{@variableSpy}::%input%::status} is set]
+            set {_done} to true
+    else:
+        send formatted "{@PrefixSpy} &8(%player's world%) &7%player%&7: &f%unformatted message%" to all players where [{{@variableSpy}::%input%::status} is set]
+
+    if {-SpyPrefixed} is true:
+        set {_prefixedList::*} to {-SpyPrefixedList} split at " " where [input is not "" or " "]
+        set {_done} to false
+        loop {_prefixedList::*}:
+            {_done} is false
+            message starts with loop-value
+            send formatted "{@PrefixSpy} &8(%player's world%) &7%player%&7: &c%unformatted message%" to all players where [{{@variableSpy}::%input%::status} is set]
+            set {_done} to true
+
+
+on command:
+    command sender is not console
+    send formatted "{@Prefix} &7%player%&7: &f/%full command%" to all players where [{{@variable}::%input%::status} is set]
