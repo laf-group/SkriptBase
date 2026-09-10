@@ -1,0 +1,6 @@
+auto reload
+
+# DISCORD
+command /discord:
+    trigger:
+        send formatted "%{-c::prefix}% %{-c::w}%Join our discord: %{-c::g}%<u><click:open_url:'https://discord.gg/?'>https://discord.gg/?</click><!u>"
