@@ -8,8 +8,8 @@ instances:
     #     bearer: override bearer token
     #     verbose: false # debug purposes
         
-    modified-please-web-mcsh-io:
-        enable: false
+    web-mcsh-io:
+        enable: true
         node: castor
         uuid: 8000104e-b782-4aba-ab36-231ba42fb277
 
@@ -21,7 +21,7 @@ instances:
 
     # Development server
     sky-mcsh-io:
-        enable: false
+        enable: true
         node: circe
         uuid: b6113f94-a60b-490f-8f42-953926dbf62d
         
