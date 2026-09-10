@@ -1,0 +1,84 @@
+auto reload
+
+# CHAT FORMAT
+on chat:
+    cancel event
+    length of (raw unformatted message) > 0
+
+    send formatted "<yellow>%player's name%<gray>: <white>%raw message%" to console
+
+    set {_prefix} to placeholder "luckperms_prefix" from player
+    if {_prefix} is not set:
+        set {_prefix} to ""
+        
+    set {_suffix} to placeholder "luckperms_suffix" from player
+    if {_suffix} is not set: 
+        set {_suffix} to ""
+
+    # send formatted formatted "%raw {_prefix}%%raw unformatted player's name% %raw {_suffix}% <dark_gray>» <white>%formatted message%" to all players
+    send formatted formatted "%raw {_prefix}%%raw unformatted player's display name% %raw {_suffix}% <dark_gray>» <white>%formatted message%" to all players
+
+    # webhook("log", "💬 %player%: %raw message%", "#ffdd80")
+
+
+# on command:
+#     webhook("log", "⚙️ %command sender%: /%raw full command%", "#ffa480")
+
+
+# STAFFCHAT
+command /sc [<args: text>]:
+    aliases: staffchat
+    permission: module.staffchat
+    trigger:
+        if {_args} is not set:
+            send formatted "%{-c::prefix}% %{-c::r}%Usage: /sc $on|$off|$toggle|text"
+            stop
+        
+        if {_args} is "$on":
+            if {STAFFCHAT::OFF::*} doesn't contain player:
+                send "%{-c::prefix}% %{-c::r}%You already toggled on the Staff Chat!"
+                stop
+            
+            remove player from {STAFFCHAT::OFF::*}
+            send formatted "%{-c::prefix}% %{-c::g}%Toggled on Staff Chat!"
+            stop
+
+        if {_args} is "$off":
+            if {STAFFCHAT::OFF::*} contains player:
+                send formatted "%{-c::prefix}% %{-c::r}%You already toggled off the Staff Chat!"
+                stop
+            
+            add player to {STAFFCHAT::OFF::*}
+            send formatted "%{-c::prefix}% %{-c::g}%Toggled off Staff Chat!"
+            stop
+
+        if {_args} is "$toggle":
+            if {STAFFCHAT::OFF::*} contains player:
+                send formatted "%{-c::prefix}% %{-c::r}%You have Staff Chat off. Use /sc $on to enable it!"
+                stop
+                
+            if {STAFFCHAT::TOGGLE::*} doesn't contain player:
+                add player to {STAFFCHAT::TOGGLE::*}
+                send formatted "%{-c::prefix}% %{-c::g}%Toggled on Staff Chat! Your chat will now be sent to Staff Chat"
+                stop
+            
+            remove player from {STAFFCHAT::TOGGLE::*}
+            send formatted "%{-c::prefix}% %{-c::g}%Toggled off Staff Chat! Your chat will now be sent normally"
+            stop        
+        
+        if {STAFFCHAT::OFF::*} contains player:
+            send formatted "%{-c::prefix}% %{-c::r}%You have Staff Chat off. Use /sc $on to enable it!"
+            stop
+        
+        set {_audience::*} to all players where [{STAFFCHAT::OFF::*} doesn't contain input]
+        send formatted "%{-c::prefix}% %{-c::r}%STAFF %player%: %{-c::w}%%{_args}%" to {_audience::*}
+
+
+
+on chat with priority lowest:
+    {STAFFCHAT::TOGGLE::*} contains player
+    cancel event
+
+    set {_audience::*} to all players where [{STAFFCHAT::OFF::*} doesn't contain input]
+    send formatted "%{-c::prefix}% %{-c::r}%STAFF %player%: %{-c::w}%%raw message%" to {_audience::*}
+    
