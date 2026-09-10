@@ -1,0 +1,25 @@
+auto reload
+
+command /gmc [<target: player>]:
+    permission: gamemode.creative
+    trigger:
+        setGamemode({_target} ? player, creative)
+        
+command /gms [<target: player>]:
+    permission: gamemode.survival
+    trigger:
+        setGamemode({_target} ? player, survival)
+        
+command /gma [<target: player>]:
+    permission: gamemode.adventure
+    trigger:
+        setGamemode({_target} ? player, adventure)
+        
+command /gmsp [<target: player>]:
+    permission: gamemode.spectator
+    trigger:
+        setGamemode({_target} ? player, spectator)
+
+local function setGamemode(p: player, mode: gamemode = survival):
+    set {_p}'s gamemode to {_mode}
+    send formatted "%{-c::prefix}% %{-c::g}%Gamemode updated to %{_mode}%" to {_p}
