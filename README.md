@@ -5,6 +5,17 @@ and most of it is encrypted for privacy reasons
 
 You are free to use and modify any of the non-encrypted scripts
 
+# 📝 Note
+
+Focused to be used in Minecraft version 1.21.11+
+
+Most if not all scripts will require these addons:
+- SkBee
+- SkCheese
+- Skript-Reflect
+- Skript-Placeholder
+- ClassySk
+
 ---
 
 # ⚙️ Tools
