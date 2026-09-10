@@ -1,0 +1,172 @@
+auto reload
+
+import:
+    org.bukkit.configuration.file.YamlConfiguration
+    org.bukkit.configuration.MemorySection
+    java.io.File
+
+
+# Get full config file
+function yaml(path: text) returns object:
+    if {_path} contains newline:
+        return yamlFromString({_path})
+
+    set {_ext} to last element of split {_path} at "."
+
+    if {_ext} is not "yml" or "yaml":
+        throw runtime error "File extension must be .yml or .yaml but receives .%{_ext}%"
+        return {_}
+        
+    set {_file} to new File({_path})
+
+    if {_file}.exists() is not true:
+        throw runtime error "Path specified is not a valid file"
+        return {_}
+    
+    if {_file}.isDirectory():
+        throw runtime error "Path specified is a directory"
+        return {_}
+
+    set {_yaml} to new YamlConfiguration()            
+    {_yaml}.load({_file})
+
+    return {_yaml}
+
+
+# Get specific value from a path
+function yaml(path: text, key: text) returns object:
+    set {_ext} to last element of split {_path} at "."
+
+    if {_ext} is not "yml" or "yaml":
+        throw runtime error "File extension must be .yml or .yaml but receives .%{_ext}%"
+        return {_}
+        
+    set {_file} to New File({_path})
+
+    if {_file}.exists() is not true:
+        throw runtime error "Path specified is not a valid file"
+        return {_}
+    
+    if {_file}.isDirectory():
+        throw runtime error "Path specified is a directory"
+        return {_}
+
+    set {_yaml} to New YamlConfiguration()            
+    {_yaml}.load({_file})
+
+    return {_yaml}.get({_key})
+
+
+# Set value of key to value and save it
+function yaml(path: text, key: text, value: object) returns object:
+    set {_ext} to last element of split {_path} at "."
+
+    if {_ext} is not "yml" or "yaml":
+        throw runtime error "File extension must be .yml or .yaml but receives .%{_ext}%"
+        return {_}
+        
+    set {_file} to New File({_path})
+
+    if {_file}.exists() is not true:
+        throw runtime error "Path specified is not a valid file"
+        return {_}
+    
+    if {_file}.isDirectory():
+        throw runtime error "Path specified is a directory"
+        return {_}
+
+    set {_yaml} to New YamlConfiguration()            
+    {_yaml}.load({_file})
+
+    {_yaml}.set({_key}, {_value}.toString())
+    {_yaml}.save({_file})
+    return {_yaml}.saveToString()
+
+
+# Get from string
+function yamlFromString(str: text) returns object:
+    set {_yaml} to New YamlConfiguration()
+    {_yaml}.loadFromString({_str})
+    if {_yaml} is not set:
+        return {_}
+    return {_yaml}
+
+
+# Redirect
+function yml(path: string) returns object:
+  return yaml({_path})
+
+function yml(path: string, key: string) returns object:
+  return yaml({_path}, {_key})
+
+function yml(path: string, key: string, value: object) returns object:
+  return yaml({_path}, {_key}, {_value)
+
+
+
+
+# EXPERIMENTAL -------------------------------------------------------------------
+
+# (read|load) y[a]ml [from] [file] %string%
+expression (read|load) y[a]ml [from] [file] %string%:
+    get:
+        set {_path} to expr-1
+        set {_ext} to last element of split {_path} at "."
+
+        if {_ext} is not "yml" or "yaml":
+            throw runtime error "File extension must be .yml or .yaml but receives .%{_ext}%"
+            return {_}
+            
+        set {_file} to New File({_path})
+
+        if {_file}.exists() is not true:
+            throw runtime error "Path specified is not a valid file"
+            return {_}
+        
+        if {_file}.isDirectory():
+            throw runtime error "Path specified is a directory"
+            return {_}
+
+        set {_yaml} to New YamlConfiguration()            
+        {_yaml}.load({_file})
+
+        return {_yaml}
+
+
+expression:
+    patterns:
+        yaml value of %string% from %object%
+        yml value of %string% from %object%
+        yaml value %string% from %object%
+        yml value %string% from %object%
+    get:
+        set {_key} to expr-1
+        set {_obj} to expr-2
+
+        if all:
+            class of {_obj} is not MemorySection
+            class of {_obj} is not YamlConfiguration
+        then:
+            throw runtime error "yaml value can only get values from MemorySection or YamlConfiguration object but receives %(class of {_obj})% instead"
+            return {_}
+        
+        return {_obj}.get({_key})
+
+
+expression:
+    patterns:
+        yaml keys of %object%
+        yaml key of %object%
+        yml keys of %object%
+        yml key of %object%
+    get:
+        set {_obj} to expr-1
+        
+        if all:
+            class of {_obj} is not MemorySection
+            class of {_obj} is not YamlConfiguration
+        then:
+            throw runtime error "yaml keys can only get keys from MemorySection or YamlConfiguration object but receives %(class of {_obj})% instead"
+            return {_}
+        
+        return ...{_obj}.getKeys(false)
