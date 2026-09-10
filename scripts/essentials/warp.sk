@@ -1,0 +1,151 @@
+auto reload
+
+on tab complete of "/warp":
+    if player has permission "*":
+    
+        # add " " to {_ids::*}
+        
+        for {_id} in (indices of {warp::*}):
+            add " %{_id}%" to {_ids::*}
+        
+        set tab completions for position 1 to ( split ("add, create, set, remove, delete, unset, warp, tp, teleport, list") at ", " ), {_ids::*}
+        
+        if ( split ("add, create, set, remove, delete, unset, warp, tp, teleport") at ", " ) contains tab arg-1:
+            set tab completions for position 2 to (indices of {warp::*})
+        
+        if ( split ("warp, tp, teleport") at ", " ) contains tab arg-1:
+            set tab completions for position 3 to (all players)
+    
+    else:
+        set tab completions for position 1 to (indices of {warp::*})
+
+
+# /warp [add|create|set|remove|delete|unset|warp|tp|teleport] [id]
+# /warp [list]
+# /warp [id]
+# /warp [teleport|tp|warp] [id] [target]
+command /warp [<args: text>]:
+    trigger:
+        set {_arg::*} to split {_args} at " "
+        
+        set {_action} to {_arg::1}
+        set {_id} to {_arg::2}
+        set {_target} to {_arg::3}
+        
+        if {_action} is not set:
+            send formatted formatted "%{-c::prefix}% %{-c::r}%Incomplete command!"
+            stop
+        
+        if any:
+            {_action} is "add"
+            {_action} is "create"
+            {_action} is "set"
+            {_action} is "remove"
+            {_action} is "delete"
+            {_action} is "unset"
+            {_action} is "warp"
+            {_action} is "tp"
+            {_action} is "teleport"
+        then:
+            if player doesn't have permission "*":
+                command sender is player
+                send formatted "%{-c::prefix}% %{-c::r}%You can't do that!"
+                stop
+            
+            
+            if {_id} is not set:
+                send formatted "%{-c::prefix}% %{-c::r}%Please specify Warp ID"
+                stop
+            
+            
+            if any:
+                {_action} is "add"
+                {_action} is "create"
+                {_action} is "set"
+            then:
+                if command sender is not player:
+                    send formatted "%{-c::prefix}% %{-c::r}%You can only create warp as a player!"
+                    stop
+                    
+                set {warp::%{_id}%} to player's location
+                set {warp::%{_id}%::x} to x of player's location
+                set {warp::%{_id}%::y} to y of player's location
+                set {warp::%{_id}%::z} to z of player's location
+                set {warp::%{_id}%::w} to "%world of player's location%"
+                set {warp::%{_id}%::p_} to pitch of player's location
+                set {warp::%{_id}%::y_} to yaw of player's location
+                send formatted "%{-c::prefix}% %{-c::g}%Created warp %{_id}% at your location!"
+                stop
+            
+            
+            if any:
+                {_action} is "remove"
+                {_action} is "delete"
+                {_action} is "unset"
+            then:
+                if {warp::%{_id}%} is not set:
+                    send formatted "%{-c::prefix}% %{-c::r}%This warp doesn't exist!"
+                    stop
+                    
+                delete {warp::%{_id}%}
+                delete {warp::%{_id}%::*}
+                send formatted "%{-c::prefix}% %{-c::g}%Removed warp %{_id}%!"
+                stop
+            
+            
+            if any:
+                {_action} is "warp"
+                {_action} is "tp"
+                {_action} is "teleport"
+            then:
+                # if command sender is not player:
+                #     send formatted "%{-c::prefix}% %{-c::r}%You can only warp as a player!"
+                #     stop
+                    
+                if {warp::%{_id}%} is not set:
+                    send formatted "%{-c::prefix}% %{-c::r}%This warp doesn't exist!"
+                    stop
+                
+                if {_target} is set:
+                    set {_target} to {_target} parsed as player
+                    
+                    if {_target} is not set:
+                        send formatted "%{-c::prefix}% %{-c::r}%Invalid target!"
+                        stop
+                    
+                    # send formatted "%{-c::prefix}% %{-c::g}%Loading %{_id}%!"
+                    # load chunk at {warp::%{_id}%}
+                    # teleport {_target} to {warp::%{_id}%}
+                    teleport {_target} to location({warp::%{_id}%::x}, {warp::%{_id}%::y}, {warp::%{_id}%::z}, world {warp::%{_id}%::w}, {warp::%{_id}%::y_}, {warp::%{_id}%::p_})
+                    send formatted "%{-c::prefix}% %{-c::g}%Teleported %{_target}% to %{_id}%!"
+                    stop
+                
+                else:
+                    # send formatted "%{-c::prefix}% %{-c::g}%Loading %{_id}%!"
+                    # load chunk at {warp::%{_id}%}
+                    # teleport player to {warp::%{_id}%}
+                    teleport player to location({warp::%{_id}%::x}, {warp::%{_id}%::y}, {warp::%{_id}%::z}, world {warp::%{_id}%::w}, {warp::%{_id}%::y_}, {warp::%{_id}%::p_})
+                    send formatted "%{-c::prefix}% %{-c::g}%Teleported to %{_id}%!"
+                    stop
+        
+        
+        else if {_action} is "list":
+            if size of (indices of {warp::*}) is 0:
+                send formatted "%{-c::prefix}% %{-c::r}%There is no existing warp!"
+                stop
+                
+            send formatted "%{-c::prefix}% %{-c::g}%Warp list: %{-c::w}%%join (indices of {warp::*}) with "  "%"
+            stop
+        
+        else:
+            set {_id} to {_arg::1}
+                    
+            if {warp::%{_id}%} is not set:
+                send formatted "%{-c::prefix}% %{-c::r}%This warp doesn't exist!"
+                stop
+                    
+            # send formatted "%{-c::prefix}% %{-c::g}%Loading %{_id}%!"
+            # load chunk at {warp::%{_id}%}
+            teleport player to location({warp::%{_id}%::x}, {warp::%{_id}%::y}, {warp::%{_id}%::z}, world {warp::%{_id}%::w}, {warp::%{_id}%::y_}, {warp::%{_id}%::p_})
+            send formatted "%{-c::prefix}% %{-c::g}%Teleported to %{_id}%!"
+            stop
