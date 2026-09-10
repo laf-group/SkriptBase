@@ -1,0 +1,51 @@
+auto reload
+
+import:
+    org.mvplugins.multiverse.core.MultiverseCoreApi
+    org.mvplugins.multiverse.core.world.MultiverseWorld
+    org.mvplugins.multiverse.core.world.options.DeleteWorldOptions
+    org.mvplugins.multiverse.core.world.options.CloneWorldOptions
+
+
+on load:
+    set {-MULTIVERSE} to MultiverseCoreApi.get()
+    # set {-MULTIVERSE::MANAGER} to {-MULTIVERSE}.getWorldManager()
+
+
+function getMultiverseWorld(name: string):: object:
+    set {_MV} to {-MULTIVERSE}.getWorldManager()
+    set {_world} to {_MV}.getWorld({_name}).get()
+    
+    if {_world} is not set:
+        throw runtime error "Invalid world or world is not loaded : %{_name}%"
+        return
+    
+    return {_world}
+
+
+function deleteMultiverseWorld(name: string):: object:
+    set {_MV} to {-MULTIVERSE}.getWorldManager()
+    set {_world} to {_MV}.getWorld({_name}).get()
+
+    if {_world} is not set:
+        throw runtime error "Invalid world or world is not loaded : %{_name}%"
+        return
+    
+    set {_deleteOptions} to DeleteWorldOptions.world({_world})
+    {_MV}.deleteWorld({_deleteOptions})
+
+    send formatted "%{-c::prefix}% %{-c::g}%Deleted world %{_name}%!" to console
+
+
+function cloneMultiverseWorld(from: string, to: string):: object:
+    set {_MV} to {-MULTIVERSE}.getWorldManager()
+    set {_world} to {_MV}.getWorld({_from}).get()
+    
+    if {_world} is not set:
+        throw runtime error "Invalid world or world is not loaded : %{_name}%"
+        return
+    
+    set {_cloneOptions} to CloneWorldOptions.fromTo({_world}, {_to})
+    {_MV}.cloneWorld({_cloneOptions})
+
+    send formatted "%{-c::prefix}% %{-c::g}%Cloned world %{_from}% to %{_to}%!" to console
