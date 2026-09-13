@@ -1,0 +1,241 @@
+
+import:
+    io.lumine.mythic.lib.api.item.NBTItem
+    net.Indyuce.mmoitems.api.item.mmoitem.LiveMMOItem
+    net.Indyuce.mmoitems.MMOItems
+
+    
+#
+# Detect MMOItems from given type and id in an inventory.
+# @param {integer} amount - The minimum amount to search.
+# @param {string} type - The TYPE of MMOItems. Example: SWORD, CONSUMABLE, GEM_STONE (UPPERCASE).
+# @param {string} id - The ID of MMOItems. Example: STEEL_SWORD, SANDWITCH, RAINBOW_GEM_STONE (UPPERCASE).
+# @param {inventory} inv - The inventory to be searched.
+# @returns {boolean} If found atleast the minimum amount, will return true, otherwise false.
+#
+function mmoitemsDetect(amount: integer, type: string, id: string, inv: inventory) :: boolean:
+    set {_found} to 0
+    
+    loop items in {_inv}:
+            
+        set {_item::type} to string tag "minecraft:custom_data;MMOITEMS_ITEM_TYPE" of nbt compound of loop-item
+        set {_item::id} to string tag "minecraft:custom_data;MMOITEMS_ITEM_ID" of nbt compound of loop-item
+        set {_item::slot} to loop-slot's index
+        
+        {_item::type} is {_type}
+        {_item::id} is {_id}
+        {_item::slot} >= 0
+        {_item::slot} <= 40
+    
+        add amount of loop-item to {_found}
+        {_found} >= {_amount}
+        
+        return true # Break loop and return
+    
+    return false
+
+
+
+#
+# Detect MMOItems from given type and id in an inventory.
+# @param {integer} amount - The minimum amount to search.
+# @param {string} type - The TYPE of MMOItems. Example: SWORD, CONSUMABLE, GEM_STONE (UPPERCASE).
+# @param {string} id - The ID of MMOItems. Example: STEEL_SWORD, SANDWITCH, RAINBOW_GEM_STONE (UPPERCASE).
+# @param {inventory} inv - The inventory to be searched.
+# @returns {boolean} If found atleast the minimum amount, will return true, otherwise false.
+#
+function mmoitemsDetectAll(type: string, id: string, inv: inventory) :: integer:
+    set {_found} to 0
+    
+    loop items in {_inv}:
+            
+        set {_item::type} to string tag "minecraft:custom_data;MMOITEMS_ITEM_TYPE" of nbt compound of loop-item
+        set {_item::id} to string tag "minecraft:custom_data;MMOITEMS_ITEM_ID" of nbt compound of loop-item
+        set {_item::slot} to loop-slot's index
+        
+        {_item::type} is {_type}
+        {_item::id} is {_id}
+        {_item::slot} >= 0
+        {_item::slot} <= 35
+    
+        add amount of loop-item to {_found}
+        
+    return {_found}
+
+
+#
+# Remove/take MMOItems from given type and id from an inventory.
+# @param {integer} amount - The minimum amount to search.
+# @param {string} type - The TYPE of MMOItems. Example: SWORD, CONSUMABLE, GEM_STONE (UPPERCASE).
+# @param {string} id - The ID of MMOItems. Example: STEEL_SWORD, SANDWITCH, RAINBOW_GEM_STONE (UPPERCASE).
+# @param {inventory} inv - The inventory to be searched.
+# @returns {boolean} If found the minimum amount and successfully removed, will return true, otherwise false.
+#
+function mmoitemsRemove(amount: integer, type: string, id: string, inv: inventory) :: boolean:
+    set {_found::amount} to 0
+    set {_found::items::*} to ""
+    
+    loop items in {_inv}:
+        set {_item::type} to string tag "minecraft:custom_data;MMOITEMS_ITEM_TYPE" of nbt compound of loop-item
+        set {_item::id} to string tag "minecraft:custom_data;MMOITEMS_ITEM_ID" of nbt compound of loop-item
+        set {_item::slot} to loop-slot's index
+    
+        {_item::type} is {_type}
+        {_item::id} is {_id}
+        {_item::slot} >= 0
+        {_item::slot} <= 35
+    
+        add amount of loop-item to {_found::amount}
+        add loop-item to {_found::Items::*}
+            
+        {_found::amount} >= {_amount}
+        
+        loop {_found::items::*}:
+            {_amount} > 0
+            if {_amount} >= amount of loop-value-2:
+                remove amount of loop-value-2 from {_amount}
+                remove loop-value-2 from {_inv}
+            else:
+                remove {_amount} of loop-value-2 from {_inv}
+            
+        return true 
+    
+    return false
+
+# command /mmogive <text: player>:
+#     permission: *
+#     trigger:
+#         mmoitemsGive(1, "GEM_STONE", "CRYOBLITZ_FORGESTONE", player("xCruxz"), false)
+
+#
+# Give MMOItems from given type and id to a player.
+# @param {integer} amount - The minimum amount to search.
+# @param {string} type - The TYPE of MMOItems. Example: SWORD, CONSUMABLE, GEM_STONE.
+# @param {string} id - The ID of MMOItems. Example: STEEL_SWORD, SANDWITCH, RAINBOW_GEM_STONE.
+# @param {player} p - The targeted player.
+# @param {boolean} silent - Send chat notification of received item to player.
+#     
+function mmoitemsGive(amount: integer, type: string, id: string, p: player, silent: boolean = true):
+    if {-nbmi::cache::%{_type}%::%{_id}%::material} is not set:
+        nexobridgemmoCache({_type}, {_id})
+    set {_item} to {-nbmi::cache::%{_type}%::%{_id}%::material}
+    give {_amount} of {_item} to {_p}
+    
+    {_silent} is false
+    send formatted "&a+ &f%{_amount}% &r%name of {_item}%" to {_p}
+
+
+#
+# Give MMOItems from given type and id to a player.
+# @param {integer} amount - The minimum amount to search.
+# @param {string} type - The TYPE of MMOItems. Example: SWORD, CONSUMABLE, GEM_STONE.
+# @param {string} id - The ID of MMOItems. Example: STEEL_SWORD, SANDWITCH, RAINBOW_GEM_STONE.
+# @param {location} loc - The target location.
+# @param {boolean} vel - Give natural velocity or no.
+#     
+function mmoitemsDrop(amount: integer, type: string, id: string, loc: location, vel: boolean = false):
+    if {-nbmi::cache::%{_type}%::%{_id}%::material} is not set:
+        nexobridgemmoCache({_type}, {_id})
+    set {_item} to {-nbmi::cache::%{_type}%::%{_id}%::material}
+    
+    drop {_amount} of {_item} at {_loc} without velocity if {_vel} is false
+    drop {_amount} of {_item} at {_loc} if {_vel} is true
+
+
+#
+function mmoitemsGet(type: string, id: string):: object:
+    if {-nbmi::cache::%{_type}%::%{_id}%::material} is not set:
+        nexobridgemmoCache({_type}, {_id})
+    set {_item} to {-nbmi::cache::%{_type}%::%{_id}%::material}
+    return {_item}
+
+
+
+on load:
+    delete {-nbmi::cache::*}
+
+# Main placeholders
+# nexobridgemmo_getName:type:id
+# nexobridgemmo_getLore:type:id:seperator
+# nexobridgemmo_getData:type:id
+# nexobridgemmo_getData:type
+placeholderapi placeholder with prefix "nexobridgemmo":
+    set {_args::*} to placeholder identifier split at ":"
+    
+    if {_args::1} is "getName":
+        set {_type} to {_args::2} in uppercase
+        set {_id} to {_args::3} in uppercase
+        
+        if {-nbmi::cache::%{_type}%::%{_id}%::name} is not set:
+            nexobridgemmoCache({_type}, {_id})
+            
+        set {_name} to {-nbmi::cache::%{_type}%::%{_id}%::name}
+        {_name} is set
+        
+        set result to {_name}
+
+    else if {_args::1} is "getLore":
+        set {_type} to {_args::2} in uppercase
+        set {_id} to {_args::3} in uppercase
+        set {_seperator} to {_args::4} ? "|"
+        
+        if {-nbmi::cache::%{_type}%::%{_id}%::lore::*} is not set:
+            nexobridgemmoCache({_type}, {_id})
+            
+        set {_lore::*} to {-nbmi::cache::%{_type}%::%{_id}%::lore::*}
+        {_lore::*} is set
+        
+        set result to join {_lore::*} with {_seperator}
+
+    else if {_args::1} is "getData":
+        set {_type} to {_args::2} in uppercase
+        set {_id} to {_args::3} in uppercase
+        
+        if {-nbmi::cache::%{_type}%::%{_id}%::data} is not set:
+            nexobridgemmoCache({_type}, {_id})
+            
+        set {_data} to {-nbmi::cache::%{_type}%::%{_id}%::data}
+        {_data} is set
+        
+        set result to "%{_data}.getValues(true)%"
+
+
+# Helper -> Cacher
+function nexobridgemmoCache(type: string, id: string):
+    set {_item} to MMOItems.plugin.getItem({_type}, {_id})
+    {_item} is set
+    
+    # send "&e&lAPI &7| &aCaching %{_item}% &7(%{_type}%&7:%{_id}%&7)" to all players where [input has permission "*"]
+    
+    set {-nbmi::cache::%{_type}%::%{_id}%::name} to name of {_item}
+    set {-nbmi::cache::%{_type}%::%{_id}%::lore::*} to lore of {_item}
+    set {-nbmi::cache::%{_type}%::%{_id}%::material} to {_item}
+    set {-nbmi::cache::%{_type}%::%{_id}%::data} to yaml("plugins/MMOItems/item/%{_type} in lowercase%.yml", "%{_id}%")
+    
+
+function mmoitemsRenew(item: itemstack):: object:
+    set {_nbtItem} to NBTItem.get({_item})
+    set {_liveItem} to new LiveMMOItem({_nbtItem})
+    set {_result} to {_liveItem}.newBuilder().build()
+    return {_result}
+
+
+on command "/mmoitems", "/mi":
+    full command contains "reload"
+    execute sender command "/sk reload %current script%"
+    send formatted "<white>MMOItems reloaded, re-hooking utils.." to sender
+
+
+# Example usage
+command /smeltore:
+    trigger:
+        # Detect first
+        if mmoitemsDetect(1, "MATERIAL", "ORICHALUM_ORE", player's inventory) is true:
+        
+            # Remove the material, can also change it to conditional to check if succeeded or not
+            # But in this case, we already checked once earlier, so the player must have one
+            mmoitemsRemove(1, "MATAERIAL", "ORICHALUM_ORE", player's inventory)
+            
+            # Give the smelted version
+            mmoitemsGive(1, "MATERIAL", "ORICHALUM_INGOT", player)
+
