@@ -1,0 +1,9 @@
+expression:
+    patterns:
+        debug %objects%
+        inspect %objects%
+    get:
+        set {_obj::*} to expr-1
+        for {_obj} in {_obj::*}:
+            add formatted "<#75c7ae>[%(class of {_obj}) ? "Null"%] <reset>%{_obj} ? "Null"%" to {_f::*}
+        return formatted {_f::*}
