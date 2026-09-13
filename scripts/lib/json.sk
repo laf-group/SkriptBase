@@ -1,0 +1,10 @@
+
+import:
+    com.google.gson.JsonObject
+    com.google.gson.JsonParser
+    
+
+function newJson(data: text = "{}"):: object:
+    if {_data} is not set:
+        set {_data} to "{}"
+    return JsonParser.parseString({_data}).getAsJsonObject()
