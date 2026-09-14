@@ -1,3 +1,5 @@
+auto reload
+
 expression:
     patterns:
         debug %objects%
