@@ -1,0 +1,39 @@
+auto reload
+
+import:
+    ch.njol.skript.lang.Variable
+
+effect %object%[ ]=[ ]%objects%:
+    parse:
+        expr-1 is an instance of Variable
+        continue
+    trigger:
+        set (raw expression of expr-1) to expr-2
+
+effect %object%[ ]+=[ ]%objects%:
+    parse:
+        expr-1 is an instance of Variable
+        continue
+    trigger:
+        add expr-2 to (raw expression of expr-1)
+
+effect %object%[ ]-=[ ]%objects%:
+    parse:
+        expr-1 is an instance of Variable
+        continue
+    trigger:
+        remove expr-2 from (raw expression of expr-1)
+
+effect %object%++:
+    parse:
+        expr-1 is an instance of Variable
+        continue
+    trigger:
+        add 1 to (raw expression of expr-1)
+
+effect %object%--:
+    parse:
+        expr-1 is an instance of Variable
+        continue
+    trigger:
+        remove 1 from (raw expression of expr-1)
