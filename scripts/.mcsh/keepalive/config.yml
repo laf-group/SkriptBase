@@ -57,4 +57,9 @@ instances:
         enable: true
         node: corvus
         uuid: 08adda7e-d3bf-4da8-83b0-c5e2167298c9
+
+    oldwhyssffa:
+        enable: true
+        node: callisto
+        uuid: 16fada79-088b-4c7a-a58b-9f8fd8dec9bf
     
