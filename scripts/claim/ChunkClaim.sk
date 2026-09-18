@@ -1,0 +1,151 @@
+
+#
+import:
+    com.sk89q.worldedit.bukkit.BukkitAdapter
+    com.sk89q.worldedit.math.BlockVector3
+
+    com.sk89q.worldguard.WorldGuard
+    com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion
+    com.sk89q.worldguard.protection.managers.RemovalStrategy
+    com.sk89q.worldguard.protection.regions.ProtectedRegion
+
+
+#
+custom event "ChunkClaimEvent":
+    pattern: ChunkClaimEvent
+
+
+#
+class ChunkClaimMeta:
+    # public meta: object = newJson("{}") # JSON, deprecated
+    public meta: object = yaml() # YAML structure
+
+    public construct(action: string, region: chunk, issuer: player, name: string):
+        {_region::x} = {_region}.getX()
+        {_region::z} = {_region}.getZ()
+        {_region::w} = {_region}.getWorld()
+        {_region} = "%{_region::x}%,%{_region::z}%,%{_region::w}%"
+
+        self::set("action", {_action}) # CLAIM, UNCLAIM, FORCE_CLAIM (STAFF), FORCE_UNCLAIM (STAFF)
+        self::set("region", {_region}) # Parse with newJson() to use
+        self::set("issuer", "%{_issuer}%")
+        self::set("name", {_name}) # ClaimChunk, <name>, <x>, <z>, <world>
+
+    public set(key: string, value: object):
+        if {_value} is not number:
+            set {_value} to "%{_value}%"
+        # self::meta.addProperty({_key}, {_value}) # JSON, deprecated
+        self::meta.set({_key}, {_value}) # YAML
+    
+    public get(key: string) returns object:
+        return self::meta.get({_key})
+    
+    public keys() returns objects:
+        return ...self::meta.getKeys(false)
+
+
+#
+effect claim chunk %chunk% (by|for) %player% [named %-string%]:
+    trigger:
+        {_data::meta} = new instance of ChunkClaimMeta
+
+        {_action} = "CLAIM"
+        {_region} = expr-1
+        {_player} = expr-2
+        {_name} = expr-3 ? "Claimed Land"
+        {_name} = {_name}.replace(" ", "_") # ->  claimed.land -> replace "_" -> propercase -> Claimed Land
+        {_name} = "ClaimChunk/%{_name}%/%{_region}.getX()%/%{_region}.getZ()%/%{_region}.getWorld()%"
+
+        {_data::meta}::construct({_action}, {_region}, {_player}, {_name})
+        {_event} = new custom event "ChunkClaimEvent" with data {_data::*}
+        call event {_event}
+
+
+#
+effect unclaim chunk %chunk% (by|for) %player%:
+    trigger:
+        {_data::meta} = new instance of ChunkClaimMeta
+
+        {_action} = "UNCLAIM"
+        {_region} = expr-1
+        {_player} = expr-2
+        {_name} = {_}
+
+        {_data::meta}::construct({_action}, {_region}, {_player}, {_name})
+        {_event} = new custom event "ChunkClaimEvent" with data {_data::*}
+        call event {_event}
+
+
+#
+on ChunkClaimEvent with priority normal:
+    {_meta} = event-data "meta"
+
+    {_action} = {_meta}::get("action")
+    {_region} = {_meta}::get("region")
+    {_issuer} = {_meta}::get("issuer") parsed as player
+    # {_cause} = {_meta}::get("cause")
+    {_name} = {_meta}::get("name")
+
+    {_region::*} = ({_region} split at ",")
+    {_region::x} = {_region::1} parsed as number
+    {_region::z} = {_region::2} parsed as number
+    {_world} = world {_region::3}
+    {_chunk} = {_world}.getChunkAt({_region::x}, {_region::z})
+
+    {_WorldGuard} = WorldGuard.getInstance()
+    {_container} = {_WorldGuard}.getPlatform().getRegionContainer()
+    {_regions} = {_container}.get(BukkitAdapter.adapt({_world}))
+
+    {_aa} = 1st element of ChunkToCoord::parse({_chunk})
+    {_bb} = 2nd element of ChunkToCoord::parse({_chunk})
+    {_center} = location({_aa}.getX() + 8, 0, {_aa}.getZ() + 8, {_world})
+
+    if {_action} is "CLAIM":
+
+        if {_regions} is not set:
+            throw runtime error "World %{_world}% doesn't support regions"
+            # {_evt}.setCancelled(true)
+            cancel event
+            stop
+
+        if region at {_center} is set:
+            # {_evt}.setCancelled(true)
+            send formatted "%{-c::prefix}% %{-c::r}%Chunk is already claimed!" to {_issuer}
+            cancel event
+            stop
+        
+        {_min} = BukkitAdapter.asBlockVector({_aa})
+        {_max} = BukkitAdapter.asBlockVector({_bb})
+
+        async run 0 ticks later:
+            {_newRegion} = new ProtectedCuboidRegion({_name}, {_min}, {_max})
+            {_newRegion}.getOwners().addPlayer(uuid of {_issuer})
+            {_regions}.addRegion({_newRegion})
+        
+        data tag "ChunkClaim:id" of {_chunk} = {_name}
+        send formatted "%{-c::prefix}% %{-c::g}%Chunk claimed" to {_issuer}
+        stop
+    
+
+    else if {_action} is "UNCLAIM":
+        {_regions::*} = ...{_regions}.getApplicableRegions(BukkitAdapter.asBlockVector({_center})).getRegions()
+        {_region} = {_regions::1}
+
+        if region at {_center} is not set:
+            # {_evt}.setCancelled(true)
+            send formatted "%{-c::prefix}% %{-c::r}%This chunk is not claimed yet!" to {_issuer}
+            cancel event
+            stop
+
+        if {_region}.getOwners().contains(uuid of {_issuer}) is false:
+            send formatted "%{-c::prefix}% %{-c::r}%You cannot unclaim this chunk!" to {_issuer}
+            cancel event
+            stop
+
+        async run 0 ticks later:
+            {_regions}.removeRegion({_region}.getId())
+
+        delete data tag "ChunkClaim:id" of {_chunk}
+
+        send formatted "%{-c::prefix}% %{-c::r}%Chunk unclaimed!" to {_issuer}
+        stop
