@@ -1,4 +1,4 @@
-# ✍️ Skript[Data]Base
+# ✍️ Skript [Data] Base
 
 This repo contains most of my Skript projects 
 and most of it is encrypted for privacy reasons
