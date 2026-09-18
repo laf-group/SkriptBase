@@ -1,0 +1,18 @@
+
+#
+class ChunkToCoord:
+
+    public static parse(chunk: chunk) returns objects:
+        return ChunkToCoord::parse({_chunk}.getX(), {_chunk}.getZ())
+
+    public static parse(x: number, z: number) returns objects:
+        {_xa} = {_x} * 16
+        {_za} = {_z} * 16
+
+        {_xb} = {_xa} + 15
+        {_zb} = {_za} + 15
+
+        {_result::aa} = location({_xa},  500, {_za})
+        {_result::bb} = location({_xb}, -500, {_zb})
+
+        return keyed {_result::*}
