@@ -1,0 +1,46 @@
+
+import:
+    io.lumine.mythic.bukkit.events.MythicMechanicLoadEvent
+    io.lumine.mythic.api.skills.ITargetedEntitySkill
+    io.lumine.mythic.api.skills.SkillResult
+
+
+# --- Custom Mechanic : comment
+on MythicMechanicLoadEvent:
+    event.getMechanicName() is "//" or ""
+    
+    create new section stored in {_f::castAtEntity}:
+        return SkillResult.SUCCESS
+
+    set {_skill} to new proxy instance of ITargetedEntitySkill using {_f::*}
+    event.register({_skill})
+
+
+
+# --- Custom Mechanic : skript code eval
+on MythicMechanicLoadEvent:
+    event.getMechanicName() is "skript" or "sk"
+    set {_config} to event.getConfig()
+    set {_raw} to {_config}.getPlaceholderString( ("code", "skript", "script", "c", "s"), "")
+    
+    create new section with {_proxy}, {_data}, {_target} stored in {_f::castAtEntity}:
+        set {_code} to {_raw}.get({_data}, ({_target} ? {_data}.getTarget() ? {_data}.getCaster()))
+
+        if {mmskript::verbose} is true:
+            send formatted {-c::prefix} . " <reset><gray>MMSkript-Bridge: <red>" . {_code} . " <reset><gray>[C:" . {_data}.getCaster().getName() . " T:" . {_data}.getTarget().getName() . "]" to console, all players where [input has permission "*"]
+
+        eval {_code}
+        return SkillResult.SUCCESS
+
+    set {_skill} to new proxy instance of ITargetedEntitySkill using {_f::*}
+    event.register({_skill})
+
+    
+on command "/mm reload", "/mm r", "/mythicmob reload", "/mythicmob r":
+    reload current script
+    send formatted {-c::prefix} . " <reset><green>MythicMob is reloaded MMSkript-Bridge is re-hooking.."
+
+
+on load:
+    # Set to true to print every skript mechanic/skill call (operator only)
+    {mmskript::verbose} = true
