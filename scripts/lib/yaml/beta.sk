@@ -1,0 +1,35 @@
+
+# #
+# import:
+#     org.bukkit.configuration.file.YamlConfiguration
+#     org.bukkit.configuration.MemorySection
+#     java.io.File
+
+#
+# class SkYml:
+#     public path: object
+#     public yaml: object
+
+#     public static new() returns object:
+#         {_SkYml} = new instance of SkYml
+#         return {_SkYml}
+
+#     public static new(path: string) returns object
+
+
+# effect [re]load y[a]ml %string% [as %-string%]:
+#     trigger:
+#         {_path} = expr-1
+#         {_id} = expr-2 ? {_path}
+
+#         set("%{_id}%/path", {_path})
+
+
+# effect []
+
+
+# local function set(key: string, val: object) :: object:
+#     {yml::%{_key}%} = {_val} ? ""
+
+# local function get(key: string) :: object:
+#     return {yml::%{_key}%} ? "unset"

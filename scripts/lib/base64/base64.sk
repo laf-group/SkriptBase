@@ -1,0 +1,21 @@
+import:
+    java.util.Base64
+    java.nio.charset.StandardCharsets
+    java.lang.String
+
+
+local function encode(str: string) :: object:
+    return Base64.getEncoder().encodeToString(({_str} ? "").getBytes(StandardCharsets.UTF_8))
+
+
+local function decode(str: string) :: object:
+    return new String(Base64.getDecoder().decode(({_str} ? "")), StandardCharsets.UTF_8)
+
+
+expression encode %string% (in|with|using) base64:
+    get:
+        return encode(expr-1)
+
+expression decode %string% (in|with|using) base64:
+    get:
+        return decode(expr-1)

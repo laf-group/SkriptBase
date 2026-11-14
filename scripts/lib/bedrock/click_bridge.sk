@@ -1,0 +1,109 @@
+import:
+    org.bukkit.event.inventory.InventoryClickEvent
+    org.bukkit.event.inventory.ClickType
+    org.bukkit.event.inventory.InventoryAction
+
+on load:
+    {-bugrock::actionField} = InventoryClickEvent.class.getDeclaredField("action")
+    {-bugrock::actionField}.setAccessible(true)
+
+    {-bugrock::clickField} = InventoryClickEvent.class.getDeclaredField("click")
+    {-bugrock::clickField}.setAccessible(true)
+
+
+on inventory click with priority lowest:
+    raw unformatted name of player starts with "." # Bedrock player
+    event-inventory action is instant move
+
+    set {_type} to string tag "minecraft:custom_data;MMOITEMS_ITEM_TYPE" of nbt of event-item
+    set {_id}   to string tag "minecraft:custom_data;MMOITEMS_ITEM_ID"   of nbt of event-item
+
+    {_type} is set
+    {_id} is set
+
+    {-bugrock::actionField}.set(event, InventoryAction.PICKUP_HALF)
+    {-bugrock::clickField}.set(event, ClickType.RIGHT)
+
+
+
+
+
+# import:
+#     org.bukkit.event.inventory.InventoryClickEvent
+#     org.bukkit.event.inventory.ClickType
+#     org.bukkit.event.inventory.InventoryType$SlotType
+#     org.bukkit.event.inventory.InventoryAction
+#     java.lang.reflect.Modifier
+#     java.lang.reflect.Field
+
+
+# on load:
+#     {-bugrock::actionField} = InventoryClickEvent.class.getDeclaredField("action")
+#     {-bugrock::actionField}.setAccessible(true)
+
+#     {-bugrock::clickField} = InventoryClickEvent.class.getDeclaredField("click")
+#     {-bugrock::clickField}.setAccessible(true)
+
+
+# on inventory click with priority lowest:
+#     # send event-item 
+#     # raw unformatted name of player starts with "." # Bedrock player
+#     event-inventory action is instant move
+
+#     set {_type} to string tag "minecraft:custom_data;MMOITEMS_ITEM_TYPE" of nbt of event-item
+#     set {_id}   to string tag "minecraft:custom_data;MMOITEMS_ITEM_ID"   of nbt of event-item
+
+#     {_type} is set
+#     {_id} is set
+
+#     {_modifiersField} = Field.class.getDeclaredField("modifiers")
+#     {_modifiersField}.setAccessible(true)
+
+#     # {_actionField} = InventoryClickEvent.class.getDeclaredField("action")
+#     # {_actionField}.setAccessible(true)
+#     {_modifiersField}.setInt({-bugrock::actionField}, {-bugrock::actionField}.getModifiers() & ~Modifier.FINAL)
+#     {-bugrock::actionField}.set(event, InventoryAction.PICKUP_HALF)
+
+#     # {_clickField} = InventoryClickEvent.class.getDeclaredField("click")
+#     # {_clickField}.setAccessible(true)
+#     {_modifiersField}.setInt({-bugrock::clickField}, {-bugrock::clickField}.getModifiers() & ~Modifier.FINAL)
+#     {-bugrock::clickField}.set(event, ClickType.RIGHT)
+    
+#     # set {_view} to player.getOpenInventory()
+#     # set {_slot} to index of event-slot
+
+#     # # wait 0 ticks
+#     # run 0 ticks later:
+#     #     set {_event} to new InventoryClickEvent({_view}, SlotType.CONTAINER, {_slot}, ClickType.RIGHT, InventoryAction.PICKUP_HALF)
+#     #     {_event}.setCancelled(false)
+#     #     call {_event}
+
+
+
+
+
+
+
+
+
+
+# on inventory click with priority lowest:
+
+#     {_actionField} = InventoryClickEvent.class.getDeclaredField("action")
+#     {_actionField}.setAccessible(true)
+
+#     send {_actionField}
+
+#     {_modifiersField} = Field.class.getDeclaredField("modifiers")
+#     {_modifiersField}.setAccessible(true)
+#     {_modifiersField}.setInt({_actionField}, {_actionField}.getModifiers() & ~Modifier.FINAL)
+
+#     {_actionField}.set(event, InventoryAction.PICKUP_HALF)
+
+#     {_clickField} = InventoryClickEvent.class.getDeclaredField("click")
+#     {_clickField}.setAccessible(true)
+#     {_modifiersField}.setInt({_clickField}, {_clickField}.getModifiers() & ~Modifier.FINAL)
+    
+#     {_clickField}.set(event, ClickType.RIGHT)
+
+#     send event

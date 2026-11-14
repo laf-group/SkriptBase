@@ -1,0 +1,8 @@
+import:
+    java.util.LinkedHashSet
+    java.util.LinkedHashMap
+    java.util.HashMap
+    java.util.Arrays
+
+# command /linkedhashset:
+#     trigger
