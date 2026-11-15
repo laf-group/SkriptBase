@@ -1,0 +1,38 @@
+
+title: '<gradient:#997540:#e2dbcf><b>Market // Blocks'
+currency: vault # vault, playerpoint, exp-point, exp-level
+permission: false # true: skript.market.<shop-id>
+items:
+  DIRT:
+    type: item # Required: item, command
+    material: DIRT # Default to STONE if not set
+    price:
+      buy: 5 # Optional: Default to -1 (Cannot be bought)
+      sell: -1 # Optional: Default to -1 (Cannot be sold)
+    display: # Optional: Only affect displayed icon inside the GUI, not the actual item
+      model: 0 # Optional: If a number, will use float model data / custom-model-data, If a string, will use that model id
+      amount: 1 # Optional: Default to 1 (1-99)
+      name: 'Dirt'
+      lore: |
+        Custom display lore
+        Hello, world!
+
+        foo:bar
+  STONE:
+    type: item
+    material: STONE
+    price:
+      buy: 10
+      sell: 0.2
+  COBBLESTONE:
+    type: item
+    material: COBBLESTONE
+    price:
+      buy: 10
+      sell: 0.1
+  BEACON:
+    type: item
+    material: BEACON
+    price:
+      buy: -1
+      sell: 5000

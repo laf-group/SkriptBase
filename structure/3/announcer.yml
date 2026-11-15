@@ -1,0 +1,240 @@
+
+list:
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Jangan lupa untuk <green>/vote <white>dan dapatkan <yellow><b>Kunci Gacha <white>gratis!
+  # - |
+  #   <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+  #      <white>Kunjungi <green>/warp tutorial <white>untuk melihat panduan bermain
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Gunakan <aqua>/sethome <white>untuk menyimpan lokasi rumahmu
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Gunakan <yellow>/shop <white>untuk membeli kebutuhan kamu
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Gunakan <green>/warp <white>untuk pergi ke lokasi penting
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Cari <green>Jobs <white>dengan <yellow>/jobs <white>dan dapatkan reward menarik
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Gunakan <red>/pvp off <white>atau <green>/pvp on <white>untuk mengatur mode <red>PVP
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Ingin mengubah penampilan? Ketik <light_purple>/cosmetics <white>untuk membuka
+       <white>menu aksesoris keren, atau gunakan <yellow>/coinshop <white>untuk
+       <white>menukarkan Coin Anda dengan berbagai item yang diinginkan!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Simpan inventory di <aqua>/pv <white>jika penuh
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Jual item dengan <green>/sellgui <white>dan jadilah pemain terkaya
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Gunakan koin di <yellow>/coinshop <white>untuk item premium
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Kehabisan <yellow>Cloud Coins<white>? Topup sekarang di
+       <aqua>store.cloudsmp.id/store
+       <white>Dapatkan rank keren dan fitur eksklusif!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Tersedia fitur <yellow><b>Battlepass Baru <white>untuk semua pemain!
+       <white>Selesaikan berbagai <green>Quests <white>yang ada dan klaim
+       <white>hadiah-hadiah keren di dalamnya!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Jangan lewatkan hadiah gratis setiap harinya!
+       <white>Ketik <green>/daily <white>untuk mengklaim daily reward kamu,
+       <white>dan buka menu reward lengkap melalui <yellow>/reward<white>!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Ingin tampil beda? Beli <light_purple>Cosmetics Tag <white>di <yellow>/cosmetics<white>!
+       <white>Lelah setelah berpetualang dan ingin duduk? 
+       <white>Cukup ketik <aqua>/sit <white>di mana saja!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Gabung komunitas resmi di <blue>Discord <white>dan <green>WhatsApp <white>Cloud SMP
+       <white>Dapatkan info update, event eksklusif, dan komunikasi yang lebih akrab!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Follow <light_purple>TikTok <white>resmi <green>@CloudSMP <white>untuk informasi menarik
+       <white>& Rank Media Gratis untuk live streamer!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Kenali aturan server dengan membaca Wiki
+       <aqua><u>store.cloudsmp.id/wiki/ketentuan-layanan
+       <white>Hindari pelanggaran dan sanksi!
+  - |
+    <dark_red><b>⚠ <red><b>Peringatan Penting
+       <white>Abaikan aturan? <red>Risiko ban sendiri!
+       <white>Baca lengkap di: <yellow>store.cloudsmp.id/wiki
+  - |
+    <dark_red><b>⚠ <red><b>Peringatan Penting
+       <white>Trap Abuse <red>DILARANG KERAS!
+       <white>Hukuman: <dark_red><b>BAN PERMANEN
+       <white>Main fair play tanpa kecurangan!
+  - |
+    <dark_red><b>⚠ <red><b>Peringatan Penting
+       <white>Dilarang keras melakukan <dark_red><b>RMT <gray>(Real Money Trade)
+       <white>Dilarang menjual Item/Rank dengan uang asli!
+       <white>Sanksi: <dark_red><b>BAN PERMANEN <white>(Penjual & Pembeli)
+  # - |
+  #   <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+  #      <white>Ingin mendownload resourcepack manual? Ketik <gold>/pack
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Punya pertanyaan basic? Ketik <green>/faq <white>untuk melihat
+       <white>jawaban dari pertanyaan yang sering ditanyakan!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Ingin punya teman setia dalam petualanganmu?
+       <white>Beli <green>Pets <white>sekarang hanya dengan <gold>1.500 Cloud Coins<white>!
+       <white>Cek <aqua>/pets <white>dan pilih companion favoritmu!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Punya kode promo rahasia? Tukarkan segera!
+       <white>Gunakan command <yellow>/redeem <kode> <white>untuk klaim hadiahnya.
+       <white>Pantau info kode terbaru di <blue>Discord <white>atau <green>WhatsApp <white>server!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Mau tau update server? Kenaikan harga farm? Update bug fix?
+       <white>Bergabunglah di Discord! Ketik <gold>/social
+  # - |
+  #   <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+  #      <white>Siapkan armor terbaikmu dan kuasai wilayah!
+  #      <white>Selesaikan event <red><b>KOTH Colorful <white>setiap hari pada jam <yellow>20:00 WIB<white>.
+  #      <white>Cek status dan lokasi event menggunakan <aqua>/koth<white>!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Tersedia berbagai pilihan <light_purple>Scroll Spesial <white>di Shop <aqua>Combat <white>dan <green>Tools<white>!
+       <white>Tingkatkan stats perlengkapanmu dengan scroll pilihan
+       <white>Cek ketersediaannya di <yellow>/shop <white>bagian <aqua>Combat <green>Tools <white>sekarang!
+  # - |
+  #   <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+  #      <white>Gunakan <light_purple>Magic Scroll <white>untuk meningkatkan peluang enchant,
+  #      <white>dan <aqua>Protection Scroll <white>untuk menjaga item berhargamu agar tetap aman!
+  #      <white>Dapatkan langsung item pelindung ini di menu <yellow>/shop<white>!
+  - |
+    <dark_red><b>⚠ <red><b>Peringatan Penting
+       <white>Mohon untuk selalu berkomunikasi dengan <green>sopan<white>.
+       <white>Dilarang keras menggunakan kata kasar/toxic di dalam chat!
+       <white>Sanksi: <red><b>MUTE selama 15 menit <white>atau bahkan lebih!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Gunakan <yellow>Black Scroll <white>untuk melepas satu custom
+       <white>enchantment secara acak dan mengubahnya menjadi buku!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Takut item hancur saat enchant? Gunakan <white>White Scroll<white>!
+       <white>Item kamu akan terlindungi jika proses enchant <red>gagal<white>.
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Tingkatkan peluang berhasil (<green>Success Rate<white>) pada
+       <white>Custom Book kamu menggunakan <green>Magic Dust<white>!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Gunakan <gold>Death Protection Scroll <white>untuk melindungi item
+       <white>agar <green>tidak hilang <white>saat kamu mati. Sangat berguna
+       <white>untuk menjaga Gear sultanmu tetap aman!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Ingin tampilan item lebih rapi? <light_purple>Transmog Scroll <white>akan
+       <white>menyusun lore enchant berdasarkan tingkat kelangkaannya.
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Pasang <aqua>Trackers <white>di senjatamu untuk menghitung jumlah
+       <white>Kill Player, Mob, atau jumlah Block yang telah dihancurkan!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Ingin pasang banyak enchant? Gunakan <yellow>Slot Increaser
+       <white>untuk menambah jumlah slot enchantment pada itemmu!
+  # - |
+  #   <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+  #      <white>Lampu hijau untuk gear sultan! <gold>Enchantment Orb
+  #      <white>meningkatkan batas maksimal enchant yang bisa dipasang.
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Kurang puas dengan persentase buku? <green>Randomization Scroll
+       <white>akan mengacak ulang %% Success & Failure pada buku enchant!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Beri identitas pada senjatamu! Gunakan <aqua>Item Nametag
+       <white>untuk mengganti nama item tanpa perlu Anvil.
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Pamerkan kerja kerasmu! <white>BlockTrak <white>akan menghitung
+       <white>berapa banyak blok yang telah kamu hancurkan dengan alat ini.
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Tunjukkan dominasimu! <red>StatTrak <white>akan mencatat jumlah
+       <white>Player Kill yang kamu dapatkan menggunakan senjata ini.
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Berapa banyak mob yang kamu bantai? <dark_red>Mob Trak <white>siap
+       <white>menghitung setiap nyawa mob yang melayang di senjatamu!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Kumpulkan <dark_purple>Souls (Jiwa) <white>dari musuh untuk digunakan
+       <white>sebagai bahan bakar enchantment spesial di itemmu!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Ingin membangun automatic farm atau membutuhkan banyak resource?
+       <white>Dapatkan dan beli berbagai jenis <yellow><b>Spawner <white>secara instan
+       <white>langsung di dalam menu <green>/shop<white> sekarang juga!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Masih bingung cara mengamankan wilayahmu?
+       <white>Kunjungi <green>/warp tutorial <white>atau tonton panduannya
+       <white>di YouTube <aqua>Cloud SMP <white>sekarang!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Punya keluhan atau saran untuk kemajuan server?
+       <white>Jangan dipendam! Laporkan keluhan / saran anda di Discord:
+       <aqua>https://store.cloudsmp.id/discord
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Takut tidak sengaja membuang item berharga milikmu?
+       <white>Gunakan command <green>/toggledrop <white>untuk mengaktifkan
+       <white>atau menonaktifkan fitur drop item pada karaktermu!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Sudah mengklaim hadiah spesial rank kamu? Ketik <green>/otr
+       <white>untuk mengambil <yellow><b>One Time Reward <white>sesuai tingkat rank-mu!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Butuh item langka <light_purple><b>Luvoria<white>? Kumpulkan poin hasil kerja kamu,
+       <white> lalu trade langsung melalui menu <yellow>/jobshop <white>sekarang!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Ingin menguji kekuatan armor dan senjatamu?
+       <white>Pergi ke arena bertarung sekarang dengan mengetik <red>/warp arena<white>!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Ingin membuat toko publik atau memamerkan hasil build-mu?
+       <white>Buat titik teleportasi publik kamu sendiri menggunakan <green>/pwarp<white>!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Ingin senjata lebih kuat? Kunjungi <gold>/warp forge <white>untuk
+       <white>memperkuat senjata kalian dengan material-material khusus!
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Amankan base dari griefing! Ketik <green>/claim <white>untuk mengunci lahan.
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Beri akses teman di base dengan <aqua>/trust <nama_pemain><white>.
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Perluas ukuran base? Hadap luar dan ketik <green>/extendclaim <blocks><white>.
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Bagi area/kamar di dalam base gunakan <green>/childclaim<white>.
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Terjebak di base orang? Ketik <red>/trapped <white>untuk keluar.
+  - |
+    <dark_aqua><b>ℹ <aqua><b>Cloud <white><b>Info
+       <white>Kurang kuota lahan? Beli via <green>/landshop <jumlah><white>.

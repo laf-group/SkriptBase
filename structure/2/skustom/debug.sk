@@ -1,0 +1,272 @@
+
+function skustomBrowser(p: player):
+    open new multi action dialog to {_p}:
+        title: formatted "%space(114)%<gradient:#56c290:#bfe9d5:#7acaa2><u><b>sKustom<reset>%space(5000)%"
+
+        columns: 1
+        after_action: "none"
+
+        body:
+            add text body:
+                contents: formatted "<gradient:#56c290:#bfe9d5:#7acaa2>Browser // Category <reset>"
+            add text body:
+                contents: formatted ""
+
+        actions:
+            {_buttons::*} = "blade", "bow", "staff", "armor", "material"
+
+            for {_button} in {_buttons::*}:
+                {_payload} = yml()
+                {_payload}.set("click", "%{_button}%")
+                {_payload}.set("ui", "skustom:browser.category")
+                {_payload}.set("player", "%{_p}%")
+                add dynamic action button:
+                    label: formatted "<#cee6da>%{_button} in propercase%"
+                    id: "skustom:browser.category"
+                    tooltip: formatted "<#cee6da>Click to browse %{_button} in propercase% Category"
+                    width: 200
+                    additions: nbt from "{payload: '%encode {_payload}.saveToString() with base64%'}"
+            
+            for {_n} in integers from 1 to 2:
+                {_payload} = yml()
+                {_payload}.set("click", "none")
+                {_payload}.set("ui", "skustom:browser.category")
+                {_payload}.set("player", "%{_p}%")
+                add dynamic action button:
+                    label: formatted " "
+                    id: "skustom:browser.category"
+                    width: 1
+                    additions: nbt from "{payload: '%encode {_payload}.saveToString() with base64%'}"
+            
+            {_payload} = yml()
+            {_payload}.set("click", "back")
+            {_payload}.set("ui", "skustom:browser.category")
+            {_payload}.set("player", "%{_p}%")
+            add dynamic action button:
+                label: formatted "<#4854c2><b><  Back"
+                id: "skustom:browser.category"
+                tooltip: formatted "<#cee6da>Back to Category Browser"
+                width: 150
+                additions: nbt from "{payload: '%encode {_payload}.saveToString() with base64%'}"
+
+            {_payload} = yml()
+            {_payload}.set("click", "close")
+            {_payload}.set("ui", "skustom:browser.category")
+            {_payload}.set("player", "%{_p}%")
+            add dynamic action button:
+                label: formatted "<#c24848><b>❌  Close"
+                id: "skustom:browser.category"
+                tooltip: formatted "<#cee6da>Close Browser"
+                width: 150
+                additions: nbt from "{payload: '%encode {_payload}.saveToString() with base64%'}"
+
+        # exit_action:
+        #     add dynamic action button:
+        #         label: formatted ""
+        #         id: "skustom:null"
+        #         width: 1
+
+function skustomBrowser(p: player, category: string):
+    open new multi action dialog to {_p}:
+        title: formatted "%space(114)%<gradient:#56c290:#bfe9d5:#7acaa2><u><b>sKustom<reset>%space(5000)%"
+
+        columns: 4
+        after_action: "none"
+
+        body:
+            add text body:
+                contents: formatted "<gradient:#56c290:#bfe9d5:#7acaa2>Browser // Category <reset>"
+            add text body:
+                contents: formatted ""
+
+        actions:
+            {_buttons::blade::*} = "bone_sword", "cactus_blade", "opal_greatblade"
+            {_buttons::bow::*} = "leaflet_bow", "spruce_shortbow", "corrupted_crossbow"
+            {_buttons::staff::*} = "lapis_staff", "honey_magiblade", "crystal_ball"
+            {_buttons::armor::*} = "blood_helmet", "demonite_robe", "wizard_hat"
+            {_buttons::material::*} = "bone_dust", "water_can", "ionite"
+
+            for {_button} in {_buttons::%{_category}%::*}:
+                {_payload} = yml()
+                {_payload}.set("click", "%{_button}%.delete")
+                {_payload}.set("ui", "skustom:browser.category.%{_category}%")
+                {_payload}.set("player", "%{_p}%")
+                add dynamic action button:
+                    label: formatted "<#c24848><b>🚫"
+                    id: "skustom:browser.category.%{_category}%.%{_button}%"
+                    tooltip: formatted "<#cee6da>Delete item %{_button} in uppercase%"
+                    width: 20
+                    additions: nbt from "{payload: '%encode {_payload}.saveToString() with base64%'}"
+
+                {_payload} = yml()
+                {_payload}.set("click", "%{_button}%.edit")
+                {_payload}.set("ui", "skustom:browser.category.%{_category}%")
+                {_payload}.set("player", "%{_p}%")
+                add dynamic action button:
+                    label: formatted "<#cee6da>%{_button} in uppercase%"
+                    id: "skustom:browser.category.%{_category}%.%{_button}%"
+                    tooltip: formatted "<#cee6da>Edit item %{_button} in uppercase%"
+                    width: 200
+                    additions: nbt from "{payload: '%encode {_payload}.saveToString() with base64%'}"
+
+                {_payload} = yml()
+                {_payload}.set("click", "%{_button}%.edit")
+                {_payload}.set("ui", "skustom:browser.category.%{_category}%")
+                {_payload}.set("player", "%{_p}%")
+                add dynamic action button:
+                    label: formatted "<#79c248>🖊"
+                    id: "skustom:browser.category.%{_category}%.%{_button}%"
+                    tooltip: formatted "<#cee6da>Edit item %{_button} in uppercase%"
+                    width: 20
+                    additions: nbt from "{payload: '%encode {_payload}.saveToString() with base64%'}"
+
+                {_payload} = yml()
+                {_payload}.set("click", "%{_button}%.get")
+                {_payload}.set("ui", "skustom:browser.category.%{_category}%")
+                {_payload}.set("player", "%{_p}%")
+                add dynamic action button:
+                    label: formatted "<#4891c2>⏬"
+                    id: "skustom:browser.category.%{_category}%.%{_button}%"
+                    tooltip: formatted "<#cee6da>Get item %{_button} in uppercase%"
+                    width: 20
+                    additions: nbt from "{payload: '%encode {_payload}.saveToString() with base64%'}"
+            
+            for {_n} in (integers from 1 to 8):
+                {_payload} = yml()
+                {_payload}.set("click", "none")
+                {_payload}.set("ui", "skustom:browser.category.%{_category}%")
+                {_payload}.set("player", "%{_p}%")
+                add dynamic action button:
+                    label: formatted ""
+                    id: "skustom:browser.category.%{_category}%"
+                    width: 1
+                    additions: nbt from "{payload: '%encode {_payload}.saveToString() with base64%'}"
+            
+            for {_n} in (integers from 1 to 1):
+                {_payload} = yml()
+                {_payload}.set("click", "none")
+                {_payload}.set("ui", "skustom:browser.category.%{_category}%")
+                {_payload}.set("player", "%{_p}%")
+                add dynamic action button:
+                    label: formatted ""
+                    id: "skustom:browser.category.%{_category}%"
+                    width: 1
+                    additions: nbt from "{payload: '%encode {_payload}.saveToString() with base64%'}"
+            
+            {_payload} = yml()
+            {_payload}.set("click", "back")
+            {_payload}.set("ui", "skustom:browser.category.%{_category}%")
+            {_payload}.set("player", "%{_p}%")
+            add dynamic action button:
+                label: formatted "<#4854c2><b><  Back"
+                id: "skustom:browser.category.%{_category}%"
+                tooltip: formatted "<#cee6da>Back to Category Browser"
+                width: 150
+                additions: nbt from "{payload: '%encode {_payload}.saveToString() with base64%'}"
+            
+            for {_n} in (integers from 1 to 2):
+                {_payload} = yml()
+                {_payload}.set("click", "none")
+                {_payload}.set("ui", "skustom:browser.category.%{_category}%")
+                {_payload}.set("player", "%{_p}%")
+                add dynamic action button:
+                    label: formatted ""
+                    id: "skustom:browser.category.%{_category}%"
+                    width: 1
+                    additions: nbt from "{payload: '%encode {_payload}.saveToString() with base64%'}"
+
+            
+            for {_n} in (integers from 1 to 1):
+                {_payload} = yml()
+                {_payload}.set("click", "none")
+                {_payload}.set("ui", "skustom:browser.category.%{_category}%")
+                {_payload}.set("player", "%{_p}%")
+                add dynamic action button:
+                    label: formatted ""
+                    id: "skustom:browser.category.%{_category}%"
+                    width: 1
+                    additions: nbt from "{payload: '%encode {_payload}.saveToString() with base64%'}"
+
+            {_payload} = yml()
+            {_payload}.set("click", "close")
+            {_payload}.set("ui", "skustom:browser.category.%{_category}%")
+            {_payload}.set("player", "%{_p}%")
+            add dynamic action button:
+                label: formatted "<#c24848><b>❌  Close"
+                id: "skustom:browser.category.%{_category}%"
+                tooltip: formatted "<#cee6da>Close Browser"
+                width: 150
+                additions: nbt from "{payload: '%encode {_payload}.saveToString() with base64%'}"
+            
+            for {_n} in (integers from 1 to 2):
+                {_payload} = yml()
+                {_payload}.set("click", "none")
+                {_payload}.set("ui", "skustom:browser.category.%{_category}%")
+                {_payload}.set("player", "%{_p}%")
+                add dynamic action button:
+                    label: formatted ""
+                    id: "skustom:browser.category.%{_category}%"
+                    width: 1
+                    additions: nbt from "{payload: '%encode {_payload}.saveToString() with base64%'}"
+
+        # exit_action:
+        #     add dynamic action button:
+        #         label: formatted "<#c24848><b>X"
+        #         id: "skustom:close"
+        #         width: 20
+
+on player custom click:
+    set {_id} to "%event-namespacedkey%" # stringify because event-namespacedkey is not string
+    set {_payload} to yml(decode (string tag "payload" of nbt of event-nbt compound) with base64)
+
+    set {_click} to {_payload}.get("click")
+    set {_player} to player({_payload}.get("player"))
+    set {_ui} to {_payload}.get("ui")
+
+    send {_click} to player
+
+    if {_id} doesn't contain "skustom:browser":
+        stop
+
+    if {_click} is "none":
+        stop
+
+    if {_click} is "close":
+        close inventory of {_player}
+        stop
+
+    if {_click} is "back":
+        skustomBrowser({_player})
+        stop
+
+    if {_ui} is "skustom:browser.category":
+        skustomBrowser({_player}, {_click})
+
+    # if {_id} contains "skustom:browser":
+    #     send formatted "<newline>Custom Click ID: %{_id}%" to player
+
+    #     set {_arg::*} to split {_id} at "."
+    #     set {_category} to {_arg::3}
+    #     set {_item} to {_arg::4}
+    #     set {_action} to {_arg::5}
+
+    #     if {_item} is not set:
+    #         {_category} is set
+    #         skustomBrowser(player, {_category})
+    #         send formatted "Category: %{_category}% | Item: %{_item}% | Action: %{_action}%"
+    #         send formatted "Clicked on category, opening.."
+        
+    #     if {_item} is set:
+    #         {_action} is not set
+    #         skustomBrowser(player, {_category})
+    #         send formatted "Category: %{_category}% | Item: %{_item}% | Action: %{_action}%"
+    #         send formatted "Clicked on dummy button, reopening.."
+        
+    #     if {_item} is set:
+    #         {_action} is set
+    #         send formatted "Category: %{_category}% | Item: %{_item}% | Action: %{_action}%"
+    #         send formatted "Clicked on action button, running function.."
+
+command /skustom:
+    trigger:
+        skustomBrowser(player)

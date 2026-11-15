@@ -1,0 +1,27 @@
+
+title: '<gradient:#599940:#e2dbcf><b>Market // Tools'
+currency: vault # vault, playerpoint, exp-point, exp-level
+permission: false # true: skript.market.<shop-id>
+items:
+  DIAMOND_SWORD:
+    type: item
+    material: DIAMOND_SWORD
+    price:
+      buy: 2500
+      sell: -1
+    enchants:
+      - SHARPNESS 3
+      - UNBREAKING 1
+    display: # Optional
+      name: 'Beginner Diamond Sword'
+      lore: |
+        Now with Sharpness 3 and
+        Unbreaking 1 built-in!
+
+        Perfect for beginner
+  FLAMING_SWORD:
+    type: command
+    material: GOLDEN_SWORD
+    price:
+      buy: 70000
+      sell: -1

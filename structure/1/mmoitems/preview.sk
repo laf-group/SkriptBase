@@ -1,0 +1,33 @@
+
+# Skript Reflect, MMOItems
+# Get 'preview' itemstack with MIN~MAX stats
+# format instead of 'result'
+# *Itemstack that is shown on recipe preview
+
+import:
+    net.Indyuce.mmoitems.api.crafting.recipe.CraftingRecipe
+
+on load:
+    {-$module} = "MIStatsPreview"
+    send info "%{-G:pass} . {-$module}% loaded"
+    
+
+function mmoitemsItemPreview(typeId: string, itemId: string) :: object:
+    {_type} = {-mmoitemsPlugin}.getTypes().get({_typeId})
+    if {_type} is not set:
+        return {_}
+    
+    if {-mmoitemsPlugin}.getTemplates().hasTemplate({_type}, {_itemId}) is false:
+        return {_}
+    
+    {_cfg} = yaml()
+    {_cfg}.set("output", "mmoitems{type=%{_typeId}%, id=%{_itemId}%}")
+    {_cfg}.set("conditions", ["level{level=0}"])
+
+    # Force Bukkit to parse the YAML natively so it creates a real java.util.List
+    # instead of Skript's Java Array wrapper. This bypasses the .getStringList() bug.
+    {_cfg} = yaml({_cfg}.saveToString())
+    
+    {_previewRecipe} = new CraftingRecipe({_cfg})
+    
+    return {_previewRecipe}.getPreviewItemStack() ? {_}

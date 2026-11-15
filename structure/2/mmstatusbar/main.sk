@@ -1,0 +1,100 @@
+
+# Skript Reflect, MythicMobs
+# Status Effects bar display
+
+import:
+    io.lumine.mythic.api.MythicProvider
+
+on load:
+    {mmstatus::tracked} = yml()
+    {mmstatus::tracked}.set("#poison_", "<#711588>☠")
+    {mmstatus::tracked}.set("#freeze_", "<#2573a7>❄")
+    {mmstatus::tracked}.set("#burn_", "<#c44525>🔥")
+    {mmstatus::tracked}.set("#slow_", "<#727d81>🕸")
+    {mmstatus::tracked}.set("#stun_", "<#fcf158>💫")
+    {mmstatus::tracked}.set("#root_", "<#795833>🫚")
+    {mmstatus::tracked}.set("#bleed_", "<#a72525>🩸")
+    {AuraManager} = MythicProvider.get().getSkillManager().getAuraManager()
+
+
+every 5 ticks:
+    for {_player} in all players:
+        displayStatusBar({_player})
+
+
+local function displayStatusBar(p: player) :: object:
+    {_registry} = {AuraManager}.getAuraRegistry(uuid of {_p})
+    # send {_registry} to {_p}
+
+    if {mmstatus::bar::%name of {_p}%} is not set:
+        {mmstatus::bar::%name of {_p}%} = bossbar
+        color of {mmstatus::bar::%name of {_p}%} = white
+        title of {mmstatus::bar::%name of {_p}%} = ""
+        progress of {mmstatus::bar::%name of {_p}%} = 100% #%
+    add {_p} to viewers of {mmstatus::bar::%name of {_p}%}
+
+    if {_registry} is not set:
+        remove {_p} from viewers of {mmstatus::bar::%name of {_p}%}
+        stop
+        
+    {_auraMap} = {_registry}.getAuras()
+    {_auraMap} is set
+    loop ...{_auraMap}.entrySet():
+        {_entry} = loop-value-1
+        {_auraName} = {_entry}.getKey()
+        {_trackers} = {_entry}.getValue()
+
+        ...{mmstatus::tracked}.getKeys(false) contains {_auraName}
+        {_icon} = {mmstatus::tracked}.get({_auraName})
+        
+        {_maxTicks} = 0
+        loop ...{_trackers}:
+            {_tracker} = loop-value-2
+            {_ticks} = {_tracker}.getTicksRemaining()
+            # broadcast {_ticks}
+            if {_ticks} > {_maxTicks}:
+                {_maxTicks} = {_ticks}
+
+        if {_maxTicks} > 0:
+            # add "%{_icon}% %({_maxTicks})%" to {_parts::*}
+            add "%{_icon}% %formatTicks({_maxTicks})%" to {_parts::*}
+
+    if {_parts::*} is not set:
+        remove {_p} from viewers of {mmstatus::bar::%name of {_p}%}
+        stop
+
+    {_title} = join {_parts::*} with "<reset> <gray>• <reset>"
+
+    title of {mmstatus::bar::%name of {_p}%} = formatted {_title}
+    # send {_title} to {_p}
+    add {_p} to viewers of {mmstatus::bar::%name of {_p}%}
+
+
+local function formatTicks(ticks: number) :: string:
+    {_totalSeconds} = ceil({_ticks} / 20)
+    {_minutes} = floor({_totalSeconds} / 60)
+    {_seconds} = mod({_totalSeconds}, 60)
+    {_minutes} = formatDigit({_minutes}, 2)
+    {_seconds} = formatDigit({_seconds}, 2)
+    return "%{_minutes}%:%{_seconds}%"
+
+# local function formatTicks(ticks: number) :: string:
+#     # broadcast "tick"
+#     {_sec} = floor({_ticks} / 20)
+#     {_tick} = mod({_ticks}, 20)
+#     {_tickStr} = {_tick}
+#     return "%{_sec}%s:%{_ticks}%t"
+
+local function formatDigit(int: integer, digit: integer) :: object:
+    {_len} = length of "%{_int}%" # Stringify
+    if {_len} >= {_digit}:
+        return {_int}
+    {_extra} = {_digit} - {_len}
+    return "0" repeated {_extra} times . {_int}
+
+
+command /list-aura:
+    permission: *
+    trigger:
+        {_registry} = {AuraManager}.getAuraRegistry(uuid of player)
+        send {_registry}.getAuras() to player

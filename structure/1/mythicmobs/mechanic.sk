@@ -1,0 +1,53 @@
+
+# Skript Reflect, MythicMobs
+# Custom Mechanic register
+
+import:
+    io.lumine.mythic.bukkit.events.MythicMechanicLoadEvent
+    io.lumine.mythic.api.skills.ITargetedEntitySkill
+    io.lumine.mythic.api.skills.SkillResult
+
+
+on load:
+    {-$module} = "MMCustomMechanics"
+    send info "%{-G:pass} . {-$module}% loaded"
+
+    {-$verbose} = false # Enable to print every skript mechanic/skill call (operator only)
+
+
+# SKRIPT Mechanic ([MM2SK] MythicMob to Skript  code execution)
+# - sk{c=send "Hello, world!" to console}
+on MythicMechanicLoadEvent:
+    event.getMechanicName() is "skript" or "sk"
+    {_config} = event.getConfig()
+    {_raw} = {_config}.getPlaceholderString( ("code", "skript", "script", "c", "s"), "")
+    
+    create new section with {_proxy}, {_data}, {_target} stored in {_f::castAtEntity}:
+        {_code} = {_raw}.get({_data}, ({_target} ? {_data}.getCaster()))
+
+        if {-$verbose} is true:
+            send info "MMSkript-Bridge: " . {_code} . " [C:" . {_data}.getCaster().getName() . "]"
+
+        eval {_code}
+        return SkillResult.SUCCESS
+
+    {_skill} = new proxy instance of ITargetedEntitySkill using {_f::*}
+    event.register({_skill})
+
+
+# COMMENT Mechanic (Unlistened mechanic line for commenting out)
+# - //{ This is a single line comment }
+# - //{
+#   Multiline 
+#   Comment
+#   }
+# - // damage{a=5} # <- Instant comment mechanic line to make it unexecutable
+on MythicMechanicLoadEvent:
+    # broadcast "Mechanic Name : " . event.getMechanicName()
+    event.getMechanicName() is "//" or ""
+    
+    create new section stored in {_f::castAtEntity}:
+        return SkillResult.SUCCESS
+
+    {_skill} = new proxy instance of ITargetedEntitySkill using {_f::*}
+    event.register({_skill})

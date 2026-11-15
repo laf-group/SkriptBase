@@ -1,0 +1,73 @@
+
+# Daily rewards
+
+# TODO
+# Use YAML Config file
+
+on load:
+    {-$amount} = 1000
+    {-$cooldown} = 24 hours
+    {-$perms} = "daily.claimed"
+
+
+command /daily [<arg: text>]:
+    trigger:
+        {_arg::*} = {_arg} split at " "
+
+        if {_arg::*} is not set:
+            if player is op:
+                add {-$amount} to balance of player
+                play sound "entity_experience_orb_pickup" with volume 1 and pitch 1 to player
+
+                add formatted {-G:prefix} . " <#d13d3d>Operator bypass" to {_t::*}
+                add formatted {-G:prefix} . " " to {_t::*}
+                add formatted {-G:prefix} . " <#56d13d>Berhasil mengambil hadiah harian!" to {_t::*}
+                add formatted {-G:prefix} . " <#56d13d>+%{-$amount}% Money" to {_t::*}
+                send formatted formatted (join {_t::*} with newline) to player
+                stop
+
+            if player have permission {-$perms}:
+                add formatted {-G:prefix} . " <#d13d3d>Kamu sudah mengambil hadiah harian!" to {_t::*}
+                send formatted formatted (join {_t::*} with newline) to player
+                stop
+            
+            # Add balance
+            add {-$amount} to balance of player
+            play sound "entity_experience_orb_pickup" with volume 1 and pitch 1 to player
+            # Set Temporary 24 hours from now
+            execute console command "lp user %name of player% permission settemp %{-$perms}% true 24h" 
+            
+            add formatted {-G:prefix} . " <#56d13d>Berhasil mengambil hadiah harian!" to {_t::*}
+            add formatted {-G:prefix} . " <#56d13d>+%{-$amount}% Money" to {_t::*}
+            send formatted formatted (join {_t::*} with newline) to player
+            stop
+        
+        else:
+            if player doesn't have permission "daily.admin":
+                add formatted {-G:prefix} . " <#d13d3d>Tidak ada izin" to {_t::*}
+                send formatted formatted (join {_t::*} with newline) to player
+                stop
+
+            {_action} = {_arg::1} # reset, check
+            {_target} = {_arg::2} parsed as player # player
+
+            if {_action} is "check":
+                {_status} = whether {_target} have permission {-$perms}
+                add formatted {-G:prefix} . " <#56d13d>%name of {_target}%'s daily reward claimed: <reset>%{_status}%" to {_t::*}
+                send formatted formatted (join {_t::*} with newline) to player
+                stop
+
+            else if {_action} is "reset":
+                execute console command "lp user %name of player% permission unset %{-$perms}%" 
+                add formatted {-G:prefix} . " <#56d13d>%name of {_target}%'s daily reward is reset" to {_t::*}
+                send formatted formatted (join {_t::*} with newline) to player
+                stop
+            
+
+
+on join:
+    wait 20 ticks
+    player doesn't have permission {-$perms}
+        
+    add formatted {-G:prefix} . " <#56d13d>Kamu masih bisa mengambil hadiah harian! <#75797c>(/rewards)" to {_t::*}
+    send formatted formatted (join {_t::*} with newline) to player

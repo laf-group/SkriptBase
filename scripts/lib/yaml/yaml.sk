@@ -1,4 +1,3 @@
-# auto reload
 
 import:
     org.bukkit.configuration.file.YamlConfiguration
@@ -6,10 +5,7 @@ import:
     java.io.File
 
 
-# Get full config file
 function yaml(path: text) returns object:
-    # send "[YAML] %whether {_path} contains newline%" to console
-
     if {_path} contains newline:
         return yamlFromString({_path})
     if {_path} is "":
@@ -68,7 +64,7 @@ function yaml(path: text, key: text, value: object) returns object:
         throw runtime error "File extension must be .yml or .yaml but receives .%{_ext}%"
         return {_}
         
-    set {_file} to New File({_path})
+    set {_file} to new File({_path})
 
     if {_file}.exists() is not true:
         throw runtime error "Path specified is not a valid file"

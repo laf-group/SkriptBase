@@ -1,0 +1,14 @@
+
+# Skript Reflect
+# Inspect the class and value of an object
+
+expression:
+    patterns:
+        debug %objects%
+        inspect %objects%
+
+    get:
+        {_obj::*} = expr-1
+        for {_obj} in {_obj::*}:
+            {_f::*} += formatted "<#75c7ae>[%({_obj}.getClass().getName()) ? "Null"%] <reset>%{_obj} ? "Null"%"
+        return formatted {_f::*}

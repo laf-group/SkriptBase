@@ -1,0 +1,40 @@
+
+# Skript Reflect, MythicMobs
+# Custom Targeters register
+
+import:
+    io.lumine.mythic.api.skills.targeters.IEntityTargeter
+    io.lumine.mythic.bukkit.events.MythicTargeterLoadEvent
+    io.lumine.mythic.bukkit.BukkitAdapter
+    java.util.Collections
+    java.util.HashSet
+    
+
+on load:
+    {-$module} = "MMCustomTargeters"
+    send info "%{-G:pass} . {-$module}% loaded"
+
+
+# BUKKITUUID Targeter (caller mechanic must have forcesync enabled)
+# - m{m="Knock knock?"; sync=true} @bukkituuid{u=<skill.target_uuid>}
+on MythicTargeterLoadEvent:
+    event.getTargeterName() is "BUKKITUUID"
+    {_config} = event.getConfig()
+    {_uuid} = {_config}.getPlaceholderString(("u", "uuid"), {_})
+    
+    create new section with {_proxy}, {_data} stored in {_f::getEntities}:
+        {_uuid} = {_uuid}.get({_data})
+
+        if {_uuid} is not set:
+            return Collections.emptySet()
+
+        {_entity} = {_uuid} parsed as entity
+        if {_entity} is not set:
+            return Collections.emptySet()
+        
+        {_out} = new HashSet()
+        {_out}.add(BukkitAdapter.adapt({_entity}))
+        return {_out}
+
+    {_skill} = new proxy instance of IEntityTargeter using {_f::*}
+    event.register({_skill})

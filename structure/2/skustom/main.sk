@@ -1,0 +1,206 @@
+
+# import:
+#     org.bukkit.configuration.MemorySection
+
+# on load:
+#     periodicalUpdate()
+#     pregenBrowser()
+
+# every 1 minute:
+#     periodicalUpdate()
+
+# local function periodicalUpdate():
+#     {-sKustom::PATH} = "plugins/Skript/scripts/2/skustom"
+#     {-sKustom::CONFIG} = yaml("%{-sKustom::PATH}%/config/settings.yml")
+#     {-sKustom::FORMAT} = yaml("%{-sKustom::PATH}%/config/formats.yml")
+
+#     # set {-sKustom::CFG} to yaml("plugins/Skript/scripts/skustom/.config/.settings.yml", "", "full")
+#     # set {-sKustom::CFG::nbt} to {-sKustom::CFG}.get("default.NBT")
+
+#     # set {-sKustom::FORMAT} to yaml("plugins/Skript/scripts/skustom/.config/.formats.yml", "", "full")
+
+#     # set {-sKustom::WEAPON} to yaml("plugins/Skript/scripts/skustom/.config/weapon.yml", "", "full")
+#     # set {-sKustom::WEAPON/KEYS} to yaml("plugins/Skript/scripts/skustom/.config/weapon.yml", "", "keys")
+
+#     # set {-sKustom::ARMOR} to yaml("plugins/Skript/scripts/skustom/.config/armor.yml", "", "full")
+#     # set {-sKustom::ARMOR/KEYS} to yaml("plugins/Skript/scripts/skustom/.config/armor.yml", "", "keys")
+
+#     # set {-sKustom::TOOL} to yaml("plugins/Skript/scripts/skustom/.config/tool.yml", "", "full")
+#     # set {-sKustom::TOOL/KEYS} to yaml("plugins/Skript/scripts/skustom/.config/tool.yml", "", "keys")
+
+#     # set {-sKustom::OFFHAND} to yaml("plugins/Skript/scripts/skustom/.config/offhand.yml", "", "full")
+#     # set {-sKustom::OFFHAND/KEYS} to yaml("plugins/Skript/scripts/skustom/.config/offhand.yml", "", "keys")
+    
+#     # {-sKustom::GUI::*}
+    
+
+# function sKustomBuilder(ID: string , TYPE: string = "WEAPON"):: object:
+#     set {_DB_} to {-sKustom::%{_TYPE}%}
+
+
+# function sKustomBuild(ID: string):: object:
+#     set {_WP} to {-sKustom::WEAPON}.get({_ID} in uppercase)
+    
+#     if {_WP} is not set:
+#         return "Invalid ID"
+#     set {_F} to {-sKustom::FORMAT}
+
+#     set {_mat} to {_WP}.get("material") parsed as itemtype
+#     set {_nbt} to {-sKustom::CFG::nbt}
+#     set {_type} to {_WP}.get("type")
+#     set {_name} to {_WP}.get("name")
+#     set {_rarity::color} to {_WP}.get("rarity.color")
+#     set {_rarity::tag} to {_WP}.get("rarity.tag")
+    
+#     set {_f::name} to {_F}.get("format.name")
+#     replace all "{NAME}" in {_f::name} with {_name}
+    
+#     set {_weapon_} to {_mat} with nbt from {_nbt}
+#     set name of {_weapon_} to {_f::name}
+    
+#     set {_lore::*} to raw join ...{_WP}.get("lore") with "<newline>"
+#     # set {_lore::*} to ...{_WP}.get("lore")
+    
+#     # set {_statlore::*} to ""
+#     add {_F}.get("format.perstat.type") to {_statlore::*}
+    
+#     for {_k} in ...{_WP}.get("stats").getKeys(true):
+#         set {_stat::%{_k}%} to {_WP}.get("stats").get({_k})
+        
+#         set {_reformat} to {_F}.get("format.perstat").get({_k})
+#         replace all "{STATS:%{_k} in uppercase%}" with "%{_stat::%{_k}%}%" in {_reformat}
+        
+#         add {_F}.get("format.perstat.seperator") to {_statlore::*}
+#         add {_reformat} to {_statlore::*}
+        
+#         set data tag "SKUSTOM:STAT/%{_k} in uppercase%" of {_weapon_} to {_stat::%{_k}%}
+    
+    
+#     set {_f::lore} to raw join {_statlore::*} with ""
+#     replace all "{TYPE}" with ({_type} in lowercase) in propercase in {_f::lore}
+#     replace all "{LORE}" with "%{_lore::*}%" in {_f::lore}
+    
+#     set data tag "SKUSTOM:IS_CUSTOM" of {_weapon_} to true
+#     set data tag "SKUSTOM:ID" of {_weapon_} to {_ID}
+#     set data tag "SKUSTOM:LAST_CRIT" of {_weapon_} to false
+    
+#     set {_swingType} to {_WP}.get("anim")
+#     set {_swingSpeed} to (20 / {_stat::attack_speed}) + 1
+    
+    
+#     add "<newline>" repeated 2 times to {_f::lore}
+#     add "%{_lore::*}%" to {_f::lore}
+    
+#     set {_disg} to {_WP}.get("disguise")
+#     set item model of {_weapon_} to {_disg} ? "%{_mat}%"
+    
+#     set {_model} to {_WP}.get("model")
+#     set model data of {_weapon_} to {_model} ? 0
+
+#     apply piercing weapon component to {_weapon_}:
+#         deals_knockback: false
+#         dismounts: false
+        
+#     apply attack range component to {_weapon_}:
+#         min_reach: 0.0
+#         max_reach: 0.0
+#         min_creative_reach: 0.0
+#         max_creative_reach: 0.0
+#         hitbox_margin: 0.0
+#         mob_factor: 0.0
+        
+#     apply swing animation component to {_weapon_}:
+#         type: {_swingType} in lowercase
+#         duration: timespan({_swingSpeed}, ticks)
+        
+#     apply attribute modifier to {_weapon_}:
+#         attribute: attack damage
+#         id: "minecraft:base_attack_damage"
+#         amount: {_stat::attack_damage}
+#         operation: add_number
+        
+#     apply attribute modifier to {_weapon_}:
+#         attribute: attack speed
+#         id: "minecraft:base_attack_speed"
+#         amount: {_stat::attack_speed}
+#         operation: add_number
+        
+#     apply attribute modifier to {_weapon_}:
+#         attribute: attack damage
+#         id: "skustom:crit_strike"
+#         amount: 0.0
+#         operation: add_number
+    
+#     set minimum attack charge of {_weapon_} to 1.0
+
+#     if class of {_WP}.get("talents") is MemorySection:
+    
+#         loop ...{_WP}.get("talents").getKeys(false):
+#         # loop ...{_WP}.get("talents"):
+#             add raw {_F}.get("format.talent.spacer") repeated 2 times to {_f::lore}
+
+#             set {_f::talent} to raw {_F}.get("format.talent.title")
+#             set {_trigger} to loop-value in uppercase
+#             set {_tag} to {_trigger}
+#             # replace all "-" with "" in {_trigger} # S-LMB => SLMB
+#             replace all "S-" with "SNEAK " in {_tag} # S-SWAP => SNEAK LMB
+#             replace all "{TRIGGER}" with {_trigger} in {_f::talent}
+#             replace all "{TALENTS:%{_trigger}%:DISPLAY}" with {_WP}.get("talents.%{_trigger}%.display") in {_f::talent}
+#             set {_tag} to placeholder "smallcaps_small_%{_tag}%"
+#             replace all "{TRIGGER_TAG}" with {_tag} in {_f::talent}
+#             add raw {_f::talent} to {_f::lore}
+            
+#             set {_CD} to {_WP}.get("talents.%{_trigger}%.cooldown") ? 0.0
+#             if {_CD} > 0.0:
+#                 add raw " <dark_gray>• " to {_f::lore}
+#                 # add raw {_F}.get("format.talent.spacer") repeated 1 times to {_f::lore}
+                
+#                 set {_f::talent} to raw {_F}.get("format.talent.cooldown")
+#                 replace all "{COOLDOWN}" with "%{_CD}%" in {_f::talent}
+#                 add raw {_f::talent} to {_f::lore}
+            
+#             set {_MANA} to {_WP}.get("talents.%{_trigger}%.mana") ? 0.0
+#             if {_MANA} > 0.0:
+#                 add raw " <dark_gray>• " to {_f::lore}
+#                 # add raw {_F}.get("format.talent.spacer") repeated 1 times to {_f::lore}
+                
+#                 set {_f::talent} to raw {_F}.get("format.talent.mana")
+#                 replace all "{MANA}" with "%{_MANA}%" in {_f::talent}
+#                 add raw {_f::talent} to {_f::lore}
+            
+#             set {_ENERGY} to {_WP}.get("talents.%{_trigger}%.energy") ? 0.0
+#             if {_ENERGY} > 0.0:
+#                 add raw " <dark_gray>• " to {_f::lore}
+#                 # add raw {_F}.get("format.talent.spacer") repeated 1 times to {_f::lore}
+                
+#                 set {_f::talent} to raw {_F}.get("format.talent.energy")
+#                 replace all "{ENERGY}" with "%{_ENERGY}%" in {_f::talent}
+#                 add raw {_f::talent} to {_f::lore}
+
+#             loop ...{_WP}.get("talents.%{_trigger}%.desc"):
+#                 add raw {_F}.get("format.talent.spacer") repeated 1 times to {_f::lore}
+
+#                 set {_f::talent} to raw {_F}.get("format.talent.desc")
+#                 replace all "{TRIGGER}" with {_trigger} in {_f::talent}
+#                 replace all "{TALENTS:%{_trigger}%:DESC}" with loop-value-2 in {_f::talent}
+#                 add raw {_f::talent} to {_f::lore}
+            
+#             # broadcast formatted {_f::talent}
+#             set data tag "SKUSTOM:TALENT/%{_trigger}%" of {_weapon_} to {_WP}.get("talents.%{_trigger}%.skill")
+#             set data tag "SKUSTOM:TALENT/%{_trigger}%/CD" of {_weapon_} to {_WP}.get("talents.%{_trigger}%.cooldown")
+#             set data tag "SKUSTOM:TALENT/%{_trigger}%/MANA" of {_weapon_} to {_WP}.get("talents.%{_trigger}%.mana")
+#             set data tag "SKUSTOM:TALENT/%{_trigger}%/ENERGY" of {_weapon_} to {_WP}.get("talents.%{_trigger}%.energy")
+
+#     # add raw {_F}.get("format.talent.spacer") repeated 2 times to {_f::lore}
+#     # set {_f::talent} to raw {_F}.get("format.toggle")
+#     # add raw {_f::talent} to {_f::lore}
+
+#     add raw {_F}.get("format.talent.spacer") repeated 2 times to {_f::lore}
+#     set {_f::talent} to raw {_F}.get("format.rarity")
+#     replace all "{RARITY:COLOR}" with {_WP}.get("rarity.color") in {_f::talent}
+#     replace all "{RARITY:TAG}" with {_WP}.get("rarity.tag") in {_f::talent}
+#     add raw {_f::talent} to {_f::lore}
+
+#     set lore of {_weapon_} to formatted split {_f::lore} at "<newline>"
+
+#     return {_weapon_}

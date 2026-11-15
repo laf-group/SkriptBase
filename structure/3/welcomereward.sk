@@ -1,0 +1,110 @@
+
+# Welcome Reward
+
+# TODO
+# Rewrite everyhing
+
+
+
+# ================================================
+#    Welcome Race System
+# ================================================
+
+# options:
+#     Prefix: &6&lWELCOME &7| &r
+#     RewardCmd: crate key give %player% 2_astral_lockpick 1
+#     MaxWinners: 5
+
+# variables:
+#     {welcome.active} = false
+#     {welcome.count} = 0
+
+
+on load:
+    set {%script%::prefix} to formatted "<gold><b>WELCOME <dark_gray>| <reset>"
+    set {%script%::reward} to "crate key give {player} 2_astral_lockpick 1"
+    set {%script%::maxwin} to 5
+    set {%script%::active} to false
+
+
+on first join:
+    set {%script%::active} to true
+    set {%script%::list::*} to {_}
+
+    add formatted {%script%::prefix} . formatted "<yellow>%name of player% <gray>bergabung untuk pertama kalinya! Ketik <yellow>'welcome' <gray>untuk menyapa!" to {_t::*}
+    add formatted "<gray>Welcome event dimulai." to {_t::*}
+    send formatted (join {_t::*} with newline) to all players
+
+
+    # Reset otomatis setelah 30 detik
+    wait 30 seconds
+    set {%script%::active} to false
+
+    add formatted {%script%::prefix} . formatted "<gray>Welcome event berakhir." to {_t::*}
+    send formatted (join {_t::*} with newline) to all players
+
+
+on chat:
+    {%script%::active} is true
+    message contains "welcome"
+    {%script%::list::*} doesn't contain player
+    size of {%script%::list::*} < {%script%::maxwin}
+    
+    # add 1 to {%script%::maxwin}
+    add player to {%script%::list::*}
+    set {_r} to {%script%::reward}
+
+    replace all "{player}" with (name of player) in {_r}
+    execute console command {_r}
+
+    add formatted {%script%::prefix} . formatted "<green>Kamu pemenang ke-" . size of {%script%::list::*} . formatted "! Hadiah diberikan.." to {_t::*}
+    send formatted (join {_t::*} with newline) to player
+
+    size of {%script%::list::*} >= 5
+
+    add formatted {%script%::prefix} . formatted "<gray>Welcome event selesai." to {_t::*}
+    send formatted (join {_t::*} with newline) to all players
+    
+    set {%script%::active} to false
+    set {%script%::list::*} to {_}
+
+
+
+# on join:
+#     # Cek pemain baru
+#     if player has not played before:
+#         set {welcome.active} to true
+#         set {welcome.count} to 0
+#         delete {welcome.list::*}
+
+#         broadcast ""
+#         broadcast "{@Prefix} &b%player% &7baru join! Cepat ketik &ewelcome &7untuk hadiah."
+#         broadcast "&8(Hanya untuk 5 orang tercepat)"
+#         broadcast ""
+
+#         # Reset otomatis setelah 30 detik
+#         wait 30 seconds
+#         set {welcome.active} to false
+
+# on chat:
+#     if {welcome.active} is true:
+#         if message contains "welcome":
+
+#             # Cek jika sudah ambil
+#             if {welcome.list::%uuid of player%} is not set:
+
+#                 if {welcome.count} < {@MaxWinners}:
+#                     add 1 to {welcome.count}
+#                     set {welcome.list::%uuid of player%} to true
+
+#                     # Eksekusi Reward
+#                     set {_cmd} to "{@RewardCmd}"
+#                     replace all "%player%" with name of player in {_cmd}
+#                     execute console command "%{_cmd}%"
+
+#                     send "{@Prefix} &aKamu pemenang ke-%{welcome.count}%! Hadiah sudah masuk." to player
+
+#                     # Stop jika sudah 5 orang
+#                     if {welcome.count} >= {@MaxWinners}:
+#                         set {welcome.active} to false
+#                         broadcast "{@Prefix} &75 orang sudah menyapa. Race selesai."

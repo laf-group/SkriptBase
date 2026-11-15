@@ -1,0 +1,95 @@
+
+# Skript Reflect
+# Experimental PDC for blocks via chunk-pdc
+# Inspired from SkBee's Block NBT
+
+import:
+    org.bukkit.block.TileState
+
+
+expression:
+    patterns:
+        posdata tag %string% of %locations%
+        locdata tag %string% of %locations%
+        blockdata tag %string% of %locations%
+        block tag %string% of %locations%
+        pdc tag %string% of %locations%
+    
+    parse:
+        {_namespace} = "minecraft"
+        
+    get:
+        {_tag} = expr-1
+        {_pos::*} = expr-2
+        
+        if {_tag} doesn't match "^[A-Za-z0-9/_\-]+$":
+            throw runtime error formatted "[BLOCK-PDC] Only alphanumeric characters, periods, underscores, and dashes can be used."
+            stop
+        
+        for {_pos} in {_pos::*}:
+            {_x}      = x of (center of location of {_pos})
+            {_y}      = y of (center of location of {_pos})
+            {_z}      = z of (center of location of {_pos})
+            {_block}  = block at {_pos}
+            {_chunk}  = chunk of {_pos}
+
+            if {_block} is instance of TileState:
+                {_holder} = {_block}
+            else:
+                {_namespace} = "%{_x}%_%{_y}%_%{_z}%/%{_namespace}%" # x_y_z/minecraft:tag
+                {_holder}    = {_chunk}
+
+            {_key}  = {_namespace} . ":" . {_tag}
+            {_data} = data tag {_key} of {_holder}
+
+            {_return::*} += {_data}
+            
+        return {_return::*}
+    
+    set:
+        {_tag} = expr-1
+        {_pos::*} = expr-2
+        
+        if {_tag} doesn't match "^[A-Za-z0-9/_\-]+$":
+            throw runtime error formatted "[BLOCK-PDC] Only alphanumeric characters, periods, underscores, and dashes can be used."
+            stop
+        
+        for {_pos} in {_pos::*}:
+            {_x}      = x of (center of location of {_pos})
+            {_y}      = y of (center of location of {_pos})
+            {_z}      = z of (center of location of {_pos})
+            {_block}  = block at {_pos}
+            {_chunk}  = chunk of {_pos}
+
+            if {_block} is instance of TileState:
+                {_holder} = {_block}
+            else:
+                {_namespace} = "%{_x}%_%{_y}%_%{_z}%/%{_namespace}%" # x_y_z/minecraft:tag
+                {_holder}    = {_chunk}
+
+            {_key} = {_namespace} . ":" . {_tag}
+            (data tag {_key} of {_holder}) = change value
+        
+    delete:
+        {_tag} = expr-1
+        {_pos::*} = expr-2
+        
+        if {_tag} doesn't match "^[A-Za-z0-9/_\-]+$":
+            throw runtime error formatted "[BLOCK-PDC] Only alphanumeric characters, periods, underscores, and dashes can be used."
+            stop
+        
+        for {_pos} in {_pos::*}:
+            {_x}      = x of (center of location of {_pos})
+            {_y}      = y of (center of location of {_pos})
+            {_z}      = z of (center of location of {_pos})
+            {_block}  = block at {_pos}
+            {_chunk}  = chunk of {_pos}
+
+            if {_block} is instance of TileState:
+                {_holder} = {_block}
+            else:
+                {_namespace} = "%{_x}%_%{_y}%_%{_z}%/%{_namespace}%" # x_y_z/minecraft:tag
+                {_holder}    = {_chunk}
+
+            {_key} = {_namespace} . ":" . {_tag}
+            delete (data tag {_key} of {_holder})

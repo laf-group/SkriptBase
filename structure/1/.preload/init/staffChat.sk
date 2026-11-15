@@ -1,0 +1,69 @@
+
+# Skript
+# Simple staffchat
+
+on load:
+    {-$permission} = "module.staffchat.use"
+
+# STAFFCHAT
+command /staffchat [<args: text>]:
+    aliases: sc
+    trigger:
+        if sender is not player:
+            send formatted "%{-G::prefix} . {-G:error}%This command can only be used by player"
+            stop
+        
+        if player does not have permission {-$permission}:
+            send formatted "%{-G::prefix} . {-G:error}%Forbidden"
+            stop
+
+        if {_args} is not set:
+            send formatted "%{-G::prefix} . {-G:error}%Usage: /sc $on|$off|$toggle|text"
+            stop
+        
+        if {_args} is "$on":
+            if {$disabled::*} does not contain player:
+                send "%{-G:prefix} . {-G:error}%You already toggled on the Staff Chat"
+                stop
+            
+            remove player from {$disabled::*}
+            send formatted "%{-G:prefix} . {-G:pass}%Toggled on Staff Chat"
+            stop
+
+        if {_args} is "$off":
+            if {$disabled::*} contains player:
+                send formatted "%{-G:prefix} . {-G:error}%You already toggled off the Staff Chat"
+                stop
+            
+            add player to {$disabled::*}
+            send formatted "%{-G:prefix} . {-G:pass}%Toggled off Staff Chat"
+            stop
+
+        if {_args} is "$toggle":
+            if {$disabled::*} contains player:
+                send formatted "%{-G:prefix} . {-G:error}%You have Staff Chat off. Use /sc $on to enable it"
+                stop
+                
+            if {$toggled::*} does not contain player:
+                add player to {$toggled::*}
+                send formatted "%{-G:prefix} . {-G:pass}%Toggled on Staff Chat! Your chat will now be sent to Staff Chat"
+                stop
+            
+            remove player from {$toggled::*}
+            send formatted "%{-G:prefix} . {-G:pass}%Toggled off Staff Chat! Your chat will now be sent normally"
+            stop        
+        
+        if {$disabled::*} contains player:
+            send formatted "%{-G:prefix} . {-G:error}%You have Staff Chat off. Use /sc $on to enable it"
+            stop
+        
+        {_audience::*} = all players where [{$disabled::*} does not contain input]
+        send formatted "%{-G:prefix} . {-G:error}%STAFF %{-G:1} . name of player%: %{-G:2} . {_args}%" to {_audience::*}
+
+
+on chat with priority lowest:
+    {$toggled::*} contains player
+    cancel event
+
+    {_audience::*} = all players where [{$disabled::*} does not contain input]
+    send formatted "%{-G:prefix} . {-G:error}%STAFF %{-G::1} . name of player%: %{-G:2} . raw message%" to {_audience::*}

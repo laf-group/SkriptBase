@@ -1,0 +1,35 @@
+
+# Skript Reflect
+# Convert to small-caps/small-case letters
+
+on load:
+    {_normal::*} = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" split at ""
+    {_small::*} = "ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘꞯʀꜱᴛᴜᴠᴡxʏᴢ" split at ""
+
+    for {_idx} in numbers between 1 and (size of {_normal::*}):
+        {_n} = {_normal::%{_idx}%}
+        {_s} = {_small::%{_idx}%}
+        {$pair::%{_n}%} = {_s}
+
+
+# (%text%|%texts%) in small[ ]ca(ps|se)
+expression:
+    patterns:
+        %texts% in smallcaps
+        %texts% in small caps
+        %texts% in smallcase
+        %texts% in small case
+        %text% in smallcaps
+        %text% in small caps
+        %text% in smallcase
+        %text% in small case
+    get:
+        add expr-1 to {_txt::*}
+
+        for {_txt} in {_txt::*}:
+            {_txt} = {_txt} in lowercase
+            for {_l} in (indices of {$pair::*}) where [{_txt} contains input]:
+                replace all {_l} in {_txt} with {$pair::%{_l}%}
+
+            {_result::*} += {_txt}
+        return {_result::*} ? {_}

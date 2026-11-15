@@ -1,0 +1,114 @@
+
+# Skript
+# Giveaway item/money
+
+# TODO
+# Rewrite everything
+
+on load:
+    {-giveaway::status} = {-giveaway::status} ? false
+
+    # FAILSAFE IF SERVER STOPPED
+    # if all:
+    #     {-giveaway::type} is set
+    #     {-giveaway::reward} is set
+    #     {-giveaway::status} is false
+    # then:
+    #     if {-giveaway::type} is "money":
+    #         add {-giveaway::reward} to balance of {-giveaway::gifter}
+    #         {-}
+
+
+on tab complete of "/giveaway":
+    player have permission "giveaway.use"
+    set tab completions for position 1 to "help", "item", "money"
+    if tab arg-1 is "money":
+        set tab completions for position 2 to 100000, 200000, 300000
+
+
+
+# giveaway help
+# giveaway item
+# giveaway money [jumlah]
+command /giveaway [<arg: text>]:
+    permission: giveaway.use
+    trigger: 
+        {_arg::*} = split {_arg} at " "
+
+        # Default arg
+        if {_arg::1} is not set:
+            {_arg::1} = "help"
+        
+        if {_arg::1} is "help":
+            add formatted "<#60b1e0>Giveaway Usage" to {_t::*}
+            add formatted "<#7ee2c4>  /giveaway help" to {_t::*}
+            add formatted "<#7ee2c4>  /giveaway item" to {_t::*}
+            add formatted "<#7ee2c4>  /giveaway money [jumlah]" to {_t::*}
+            send formatted formatted (join {_t::*} with newline) to player
+            stop
+        
+        if {-giveaway::status} is true:
+            add formatted "<#e05151>Sedang ada giveaway yang berlangsung!" to {_t::*}
+            send formatted formatted (join {_t::*} with newline) to player
+            stop
+        
+        else if {_arg::1} is "item":
+            {_reward} = tool of player
+            if {_reward} is not set:
+                add formatted "<#e05151>Kamu tidak memegang item apapun!" to {_t::*}
+                send formatted formatted (join {_t::*} with newline) to player
+                stop
+
+            set tool of player to air
+
+            {-giveaway::type} = "item" # Save globally failsafe
+            {-giveaway::reward} = {_reward} # Save globally
+            {-giveaway::gifter} = player # Save globally failsafe
+            {-giveaway::status} = true
+        
+        else if {_arg::1} is "money":
+            {_reward} = {_arg::2} parsed as number
+            if {_reward} is not set:
+                add formatted "<#e05151>Spesifikasikan jumlah uang!" to {_t::*}
+                send formatted formatted (join {_t::*} with newline) to player
+                stop
+
+            if {_reward} < 100000:
+                add formatted "<#e05151>Jumlah uang minimal 100.000! <#5c5656>(Protes ke Nanda)" to {_t::*}
+                send formatted formatted (join {_t::*} with newline) to player
+                stop
+
+            if {_reward} > balance of player:
+                add formatted "<#e05151>Kamu tidak punya cukup uang!" to {_t::*}
+                send formatted formatted (join {_t::*} with newline) to player
+                stop
+
+            remove {_reward} from balance of player
+
+            {-giveaway::type} = "money" # Save globally failsafe
+            {-giveaway::reward} = {_reward} # Save globally
+            {-giveaway::gifter} = player # Save globally failsafe
+            {-giveaway::status} = true
+
+        {_p::*} = all players # where [input is not player]
+        {-giveaway::winner} = random element out of {_p::*}
+
+        loop 30 times:
+            {_p} = random element out of {_p::*}
+            play sound "entity.experience_orb.pickup" with volume 0.3 with pitch 1.5 to all players
+            send title "<#bce081>Mengacak.." with subtitle "<#6acc51>%name of {_p}%" to all players for 5 seconds with fadein 0 second and fadeout 0 second
+            wait for 2 ticks
+
+        play sound "entity.player.levelup" with volume 0.3 with pitch 1.5 to all players
+        send title "<#bce081>Pemenang" with subtitle "<#6acc51>%name of {-giveaway::winner}%" to all players for 5 seconds with fadein 0 second and fadeout 2 seconds
+
+        if {-giveaway::type} is "item":
+            give {-giveaway::reward} to {-giveaway::winner}
+        
+        else if {-giveaway::type} is "money":
+            add {-giveaway::reward} to balance of {-giveaway::winner}
+
+        {-giveaway::type} = {_}
+        {-giveaway::reward} = {_}
+        {-giveaway::gifter} = {_}
+        {-giveaway::status} = false

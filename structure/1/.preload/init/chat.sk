@@ -1,0 +1,38 @@
+
+# Skript
+# Custom chat display handler
+
+on load:
+    {-$override} = true # Whether still override if essentials loaded or dont override
+    if any:
+        loaded plugins contains "Essentials"
+        loaded plugins contains "EssentialsX"
+        loaded plugins contains "EssentialChat"
+        loaded plugins contains "EssentialsChat"
+    then:
+        {-$override} is not true
+        {-$essentials} = true
+        send warn "Essentials plugin is loaded, disabling custom chat handler."
+        stop
+
+
+on chat with priority high:
+    {-$essentials} is not true # Skip if essential is installed
+
+    cancel event
+    length of (raw unformatted message) > 0
+
+    send formatted "<yellow>%name of player%<gray>: <white>%raw message%" to console
+
+    {_prefix} = placeholder "luckperms_prefix" from player
+    if {_prefix} is not set:
+        {_prefix} = ""
+        
+    {_suffix} = placeholder "luckperms_suffix" from player
+    if {_suffix} is not set: 
+        {_suffix} = ""
+
+    send formatted formatted "%raw {_prefix} . raw unformatted display name of player . raw {_suffix}% <dark_gray>» <white>%formatted message%" to all players
+
+
+    

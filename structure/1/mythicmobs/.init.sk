@@ -1,0 +1,12 @@
+
+import:
+    io.lumine.mythic.bukkit.events.MythicReloadedEvent
+
+
+on MythicReloadedEvent:
+    send info "%{-G:pass}% MythicMobs reloaded, re-hooking MythicMobs utilities"
+
+    {_name} = script.name()
+    {_path} = script.nameAndPath()
+    {_path} = {_path}.substring(0, length of {_path} - length of {_name})
+    reload script {_path}

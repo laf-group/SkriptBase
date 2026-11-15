@@ -1,0 +1,9 @@
+
+on load:
+    {-$module} = "PAPISmallCase"
+    send info "%{-G:pass} . {-$module}% loaded"
+
+
+papi placeholder with prefix "smallcase":
+    {_txt} = identifier
+    result = {_txt} in smallcase

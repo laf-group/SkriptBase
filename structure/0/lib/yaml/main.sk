@@ -1,0 +1,118 @@
+
+# Skript Reflect
+# Quick YML support -> YamlConfiguration
+
+import:
+    org.bukkit.configuration.file.YamlConfiguration
+    org.bukkit.configuration.MemorySection
+    java.io.File
+
+
+# Get full config file
+function yaml(path: text) returns object:
+    # send "[YAML] %whether {_path} contains newline%" to console
+
+    if {_path} contains newline:
+        return yamlFromString({_path})
+    if {_path} is "":
+        return yamlFromString({_path})
+
+    {_ext} = last element of split {_path} at "."
+    if {_ext} is not "yml" or "yaml":
+        throw runtime error "File extension must be .yml or .yaml but receives .%{_ext}%"
+        return {_}
+        
+    {_file} = new File({_path})
+
+    if {_file}.exists() is not true:
+        throw runtime error "Path specified is not a valid file"
+        return {_}
+    
+    if {_file}.isDirectory():
+        throw runtime error "Path specified is a directory"
+        return {_}
+
+    {_yaml} = new YamlConfiguration()            
+    {_yaml}.load({_file})
+
+    return {_yaml}
+
+
+# Get specific value from a path
+function yaml(path: text, key: text) returns object:
+    {_ext} = last element of split {_path} at "."
+
+    if {_ext} is not "yml" or "yaml":
+        throw runtime error "File extension must be .yml or .yaml but receives .%{_ext}%"
+        return {_}
+        
+    {_file} = New File({_path})
+
+    if {_file}.exists() is not true:
+        throw runtime error "Path specified is not a valid file"
+        return {_}
+    
+    if {_file}.isDirectory():
+        throw runtime error "Path specified is a directory"
+        return {_}
+
+    {_yaml} = New YamlConfiguration()            
+    {_yaml}.load({_file})
+
+    return {_yaml}.get({_key})
+
+
+# value of key = value and save it
+function yaml(path: text, key: text, value: object) returns object:
+    {_ext} = last element of split {_path} at "."
+
+    if {_ext} is not "yml" or "yaml":
+        throw runtime error "File extension must be .yml or .yaml but receives .%{_ext}%"
+        return {_}
+        
+    {_file} = New File({_path})
+
+    if {_file}.exists() is not true:
+        throw runtime error "Path specified is not a valid file"
+        return {_}
+    
+    if {_file}.isDirectory():
+        throw runtime error "Path specified is a directory"
+        return {_}
+
+    {_yaml} = New YamlConfiguration()            
+    {_yaml}.load({_file})
+
+    {_yaml}.set({_key}, {_value}.toString())
+    {_yaml}.save({_file})
+    return {_yaml}.saveToString()
+
+
+function yaml() returns object:
+    return yamlFromString()
+
+
+# Get from string
+local function yamlFromString(str: text = "") returns object:
+    {_yaml} = New YamlConfiguration()
+    {_yaml}.loadFromString({_str})
+    if {_yaml} is not set:
+        return {_}
+    return {_yaml}
+
+# Save to string
+# YamlConfiguration.saveToString()
+
+
+# Redirect
+function yml() returns object:
+    return yaml()
+
+function yml(path: string) returns object:
+    return yaml({_path})
+
+function yml(path: string, key: string) returns object:
+    return yaml({_path}, {_key})
+
+function yml(path: string, key: string, value: object) returns object:
+    return yaml({_path}, {_key}, {_value})

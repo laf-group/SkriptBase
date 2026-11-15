@@ -1,0 +1,64 @@
+
+# Skript Reflect, MythicMobs
+# Custom Conditions register
+
+import:
+    io.lumine.mythic.bukkit.events.MythicConditionLoadEvent
+    io.lumine.mythic.api.skills.conditions.IEntityCondition
+    org.bukkit.entity.Player
+    
+
+on load:
+    {-$module} = "MMCustomConditions"
+    send info "%{-G:pass} . {-$module}% loaded"
+
+
+# ATTACKCOOLDOWN Condition
+# - atkcd{v=<=1}
+on MythicConditionLoadEvent:
+    event.getConditionName() is "ATKCD" or "ATKCOOLDOWN" or "ATTACKCOOLDOWN" or "ATTACKCD"
+
+    {_config} = event.getConfig()
+    {_expectedValue} = {_config}.getPlaceholderString(("value", "v"), {_})
+    
+    create new section with {_proxy}, {_target} stored in {_f::check}:
+        {_player} = {_target}.getEntityAsPlayer()
+        if {_player} is instance of Player:
+            {_cooldown} = attack cooldown of {_player}
+            {_expectedValue} = {_expectedValue}.get({_target})
+
+            if {_expectedValue} starts with ">=" or "=>":
+                {_required} = {_expectedValue}.substring(2) parsed as number
+                if {_cooldown} >= {_required}:
+                    return true
+                return false
+                
+            else if {_expectedValue} starts with "<=" or "=<":
+                {_required} = {_expectedValue}.substring(2) parsed as number
+                if {_cooldown} <= {_required}:
+                    return true
+                return false
+
+            else if {_expectedValue} starts with "=":
+                {_required} = {_expectedValue}.substring(1) parsed as number
+                if {_cooldown} is {_required}:
+                    return true
+                return false
+
+            else if {_expectedValue} starts with ">":
+                {_required} = {_expectedValue}.substring(1) parsed as number
+                if {_cooldown} > {_required}:
+                    return true
+                return false
+
+            else if {_expectedValue} starts with "<":
+                {_required} = {_expectedValue}.substring(1) parsed as number
+                if {_cooldown} < {_required}:
+                    return true
+                return false
+            
+            return false
+        return false
+    
+    {_condition} = new proxy instance of IEntityCondition using {_f::*}
+    event.register({_condition})

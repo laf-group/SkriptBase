@@ -1,0 +1,95 @@
+
+# Default prefix for all messages
+prefix: "<gradient:#076e47:#53ca2f><b>SKUSTOM<reset>"
+
+# Value is encased in #value#
+# Special placeholder:
+# #color# - Tier/rarity color
+
+# Accepts PlaceholderAPI
+# Everything is formatted in MiniMessage
+stat-format:
+  item-name: "<white>#color##value#<reset>"
+  item-lore: "<gray><i>#value#<reset>" # Lore format per-line
+  item-type: "<dark_gray><u>#value#<reset>"
+  item-tier: "<white>#color##value#<reset>"
+
+  durability: "<gray>#value#<reset>"
+  durability-max: "<gray>#value#<reset>"
+
+  attack-damage: "<light_blue>Attack Damage: <white>#value#<reset>"
+  attack-speed: "<light_blue>Attack Speed: <white>#value#<dark_gray>/s<reset>"
+
+  crit-chance: "<light_blue>Crit Chance: <white>#value#%<reset>"
+  crit-damage: "<light_blue>Crit Damage: <white>#value#<reset>"
+
+  mana-max: "<light_blue>Max Mana: <white>#value#<reset>"
+  health-max: "<light_blue>Max Health: <white>#value#<reset>"
+  # energy-max: "<light_blue>Max Energy: <white>#value#<reset>"
+
+  mana-regen: "<light_blue>Mana Regen: <white>#value#<dark_gray>/s<reset>"
+  heath-regen: "<light_blue>Health Regen: <white>#value#<dark_gray>/s<reset>"
+  # energy-regen: "<light_blue>Energy Regen: <white>#value#<dark_gray>/s<reset>"
+
+  talent-trigger: "<white><b>#value# <dark_gray>//<reset>" # RMB/LMB/S-RMB/S-LMB/SWAP/S-SWAP
+  talent-display: "<gray>#value#<reset>"
+  talent-lore: "<gray> #value#<reset>" # Talent lore/description per-line
+  talent-spacer: "<newline>" # Between multiple talents (if any)
+  talent-mana-usage: "<gray>[<light_blue>#value#<gray>]<reset>"
+  talent-health-usage: "<gray>[<red>#value#<gray>]<reset>"
+  # talent-energy-usage: "<gray>[<yellow>#value#<gray>]<reset>"
+
+
+# Display name format for trigger value in stat-format
+talent-format:
+  right-click: "RMB"
+  sneak-right-click: "S-RMB"
+  left-click: "LMB"
+  sneak-left-click: "S-LMB"
+  swap: "SWAP"
+  sneak-swap: "S-SWAP"
+
+
+# Placeholder follows the stat-format ids
+lore-format:
+  - "#item-type# <dark_gray>- #item-tier#"
+  - ""
+  - "#attack-damage#"
+  - "#attack-speed#"
+  - "#crit-chance#"
+  - "#crit-damage#"
+  - "#health-max#"
+  - "#health-regen#"
+  - "#mana-max#"
+  - "#mana-regen#"
+  - ""
+  - "#talent-trigger# #talent-display#"
+  - "#talent-lore#"
+  - "<gray>Cost #talent-mana-usage# #talent-health-usage#"
+  - "#talent-spacer#"
+  - ""
+  - "#item-lore#"
+  - ""
+  - "#durability# <dark_gray>| #durability-max#"
+
+# Can be used to format texts automatically
+inline-formatter:
+  # #WEAPON-DAMAGE:50# -> 50% Weapon Damage
+  WEAPON-DAMAGE:
+    format: "<#c79c40>#value#% <#e7cb8f>Weapon Damage<reset>"
+  PHYSICAL-DAMAGE:
+    format: "<#741919>#value# <#b85959>Physical Damage<reset>"
+  MAGIC-DAMAGE:
+    format: "<#1e528d>#value# <#4d80b9>Magic Damage<reset>"
+  TRUE-DAMAGE:
+    format: "<#a4b5b8>#value# <#eceff0>True Damage<reset>"
+
+  BONUS-HEALTH:
+    format: "<#2bad32>#value#% <#74d479>Bonus Health<reset>"
+
+  PHYSICAL-DEFENSE:
+    format: "<#741919>#value#% <#b85959>Physical Defense<reset>"
+  MAGIC-DEFENSE:
+    format: "<#1e528d>#value# <#4d80b9>Magic Defense<reset>"
+  HYBRID-DEFENSE:
+    format: "<#a4b5b8>#value# <#eceff0>Hybrid Defense<reset>"

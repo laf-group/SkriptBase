@@ -1,0 +1,62 @@
+
+# Skript Reflect
+# Bridge to Excellent Economy plugin
+
+import:
+    su.nightexpress.excellenteconomy.api.ExcellentEconomyAPI
+    org.bukkit.Bukkit
+
+
+on load:
+    {-$provider} = Bukkit.getServer().getServicesManager().getRegistration(ExcellentEconomyAPI.class)
+    {-$api} = {-$provider}.getProvider()
+
+expression (balance|bal|currency) %string% of %player%:
+    # return type: object
+    get:
+        {_currency} = expr-1
+        {_player} = expr-2
+        return {-$api}.getBalance({_player}, {_currency})
+
+    set:
+        {_currency} = expr-1
+        {_player} = expr-2
+        {_value} = change value
+        {_value} is set
+        {_value} is number
+        {_value} >= 0
+        {-$api}.setBalance({_player}, {_currency}, {_value})
+
+    add:
+        {_currency} = expr-1
+        {_player} = expr-2
+        {_value} = change value
+        {_value} is set
+        {_value} is number
+        {_value} >= 0
+        {-$api}.deposit({_player}, {_currency}, {_value})
+
+    remove:
+        {_currency} = expr-1
+        {_player} = expr-2
+        {_value} = change value
+        {_value} is set
+        {_value} is number
+        {_value} >= 0
+        {-$api}.withdraw({_player}, {_currency}, {_value})
+
+    delete:
+        {_currency} = expr-1
+        {_player} = expr-2
+        {-$api}.setBalance({_player}, {_currency}, 0)
+
+    reset:
+        {_currency} = expr-1
+        {_player} = expr-2
+        {-$api}.setBalance({_player}, {_currency}, 0)
+
+
+expression all [of [[the] registered]] currenc(y|ies):
+    # return type: object
+    get:
+        return ...{-$api}.getCurrencies()

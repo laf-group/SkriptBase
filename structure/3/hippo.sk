@@ -1,0 +1,28 @@
+
+# Im just learning on how to use Hippo here lol
+
+# # 1. Pre-the standard Java abstract class so Hippo knows what we're extending
+# preimport:
+#     dev.laf.MyTask
+#     java.util.TimerTask
+
+# # 2. Define your custom class that extends the abstract class
+# public class MyTask extends TimerTask:
+
+#     # 3. Constructor must call super() first.
+#     # TimerTask has a protected no-arg constructor, so super[]() works.
+#     public MyTask():
+#         super[]()
+
+#     # 4. Implement the abstract run() method with Skript logic.
+#     # The 'override' keyword is optional but improves clarity (supported in later Hippo versions).
+#     public void run():
+#         broadcast "MyTask executed at %now%!"
+
+# on load:
+#     # Instantiate your custom class
+#     set {_task} to new MyTask()
+
+#     # Since TimerTask has a run() method, you can call it directly to test.
+#     # (In a real scenario, you'd typically pass this task to a java.util.Timer.)
+#     {_task}.run()

@@ -1,0 +1,8 @@
+
+on load:
+    wait 1 seconds:
+        execute console command "/mythicmobs reload"
+        execute console command "/mythiclib reload"
+        execute console command "/mmoitems reload all"
+        execute console command "/tab reload"
+        execute console command "/papireload reload"

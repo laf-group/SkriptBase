@@ -1,0 +1,46 @@
+
+BONE_SWORD:
+  item-name: "Bone Sword"
+  item-lore: | # Will be splitted at every newline for formatting later on
+    Assembled with precision.
+    Will crush everything it's
+    smashed on.
+  item-type: "Dungeon Weapon" # Optional, this defaulted to the category name if not set, e.g. "Blade"
+  item-tier: COMMON
+  durability-max: 500
+  attack-damage: 7.3
+  attack-speed: 3.0 # per second
+  crit-chance: 5
+  crit-damage: 250
+  mana-max: 10
+  mana-regen: 0.05
+  health-max: 3
+  health-regen: 0.1
+  unbreakable: false
+  custom-behavior:
+    interaction: false # Cannot hit and interact normally/using vanilla behavior
+    swing-speed: true # Each swing follows attack-speed, spam clicking will not register
+  talents:
+    left-click:
+      BONE_SWING:
+        mythic-skill: "BONE_SWING"
+        lore: |
+          Swing weapon in circular motion,
+          deal #WEAPON-DAMAGE:100# on first
+          hit, adds #PHYSICAL-DAMAGE:0.5# on
+          every hit after it.
+        mana-usage: 0.0
+    sneak-left-click: []
+    right-click:
+      SKULL_SLAM:
+        mythic-skill: "SKULL_SLAM"
+        mana-usage: 3.5
+      HEAVY_SLAM:
+        mythic-skill: "HEAVY_SLAM"
+        mana-usage: 5.0
+    sneak-right-click: []
+    swap: []
+    sneak-swap:
+      DEATH_BEAM:
+        mythic-skill: "DEATH_BEAM"
+        health-usage: 10.0

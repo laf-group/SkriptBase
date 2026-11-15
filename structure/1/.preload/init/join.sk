@@ -1,0 +1,42 @@
+
+# Skript
+# Simple join-leave message customizer
+
+on load:
+    {-$override} = true # Whether still override if essentials loaded or dont override
+    if any:
+        loaded plugins contains "Essentials"
+        loaded plugins contains "EssentialsX"
+        loaded plugins contains "EssentialChat"
+        loaded plugins contains "EssentialsChat"
+    then:
+        {-$override} is not true
+        {-$essentials} = true
+        send warn "Essentials plugin is loaded, disabling custom join-leave message handler."
+        stop
+
+
+on first join:
+    {-$essentials} is not true
+    wait 5 ticks:
+        execute player command "/warp tutorial"
+
+
+on join:
+    {-$essentials} is not true
+    wait 5 ticks:
+        join message = {_}
+
+        add formatted formatted "%{-G:prefix}% %{-G:pass}%|→ %{-G:1}%%player's name% joined" to {_t::*}
+        send formatted (join {_t::*} with newline) to all players, console
+
+        execute player command "/warp spawn"
+
+
+on quit:
+    {-$essentials} is not true
+    wait 5 ticks:
+        leave message = {_}
+
+        add formatted formatted "%{-G:prefix}% %{-G:error}%←| %{-G:2}%%player's name% left" to {_t::*}
+        send formatted (join {_t::*} with newline) to all players, console

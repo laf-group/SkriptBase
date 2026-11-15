@@ -1,0 +1,48 @@
+
+# Skript Reflect
+# Item showcase InteractiveChat-alternative
+# Current development stopped
+
+# TODO
+# Continue project
+
+on chat with priority lowest:
+    replace all "[i]", "[item]" with "%show item player's tool%<reset>" in message
+    replace all "[m]", "[money]" with "%show balance player%<reset>" in message
+
+
+import:
+    net.kyori.adventure.text.Component
+
+    
+expression:
+    patterns:
+        show item %itemstack%
+        showcase item %itemstack%
+    get:
+        {_item} = expr-1
+        # {_hover} = item hover component from {_item} ? air
+        {_hover} = Component.empty().hoverEvent({_item}.asHoverEvent()) ? air
+
+        {_displayName} = name of {_item}
+        {_componentName} = component item name of {_item}
+        {_fallbackName} = "Air"
+
+        {_amount} = amount of {_item}
+        {_amount} = "%{_amount}%x " if {_amount} > 1 else ""
+
+        return formatted "%{_hover}%<#fdffa2>[<#b9bdc0>%{_amount}%<#8ae4ff>%{_displayName} ? {_componentName} ? {_fallbackName}%<#fdffa2>]"
+
+
+expression:
+    patterns:
+        show balance %player%
+        showcase balance %player%
+    get:
+        {_player} = expr-1
+        {_balance} = money of {_player}
+        {_balance} = formatNumber({_balance}, "###,###.##")
+        {_hover} = formatted "<hover:show_text:'<#75ff75>%{_player}%'s Balance'>"
+        {_click} = formatted "<click:suggest_command:'/pay %{_player}%'>"
+        
+        return formatted "%{_click}%%{_hover}%<#fdffa2>[<#ffc421>$<#ffc852>%{_balance}%<#fdffa2>]"

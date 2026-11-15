@@ -1,0 +1,149 @@
+
+# Skript, HMCosmetics
+# Just GUI Builder for cosmetic selection
+
+on load:
+    set {-cosmetic::CFG::hats} to yml("plugins/HMCCosmetics/cosmetics/hats.yml")
+    set {-cosmetic::CFG::hats.keys} to yml("plugins/HMCCosmetics/cosmetics/hats.yml").getKeys(false)
+    # set {-cosmetic::CFG::wings} to yml("plugins/HMCCosmetics/cosmetics/wings.yml")
+
+
+command /cosmetics:
+    aliases: /cosmetic, /cosm, /cosm
+    trigger:
+        cosmeticsBrowser(player)
+
+
+local function cosmeticsBrowser(p: player, page: number = 1, dex: number = 28):
+    set {_gui} to chest inventory with 6 rows named formatted "<gradient:#4b4caf:#46d352><b>Cloud Cosmetics"
+    
+    # BORDER
+    set {_i} to black_stained_glass_pane named ""
+    hide entire tooltip of {_i}
+    set slot (integers between 0 and 53) of {_gui} to {_i}
+    
+    # MUST EMPTY ("AVAILABLE SLOTS")
+    set {_i} to air
+    set slot (integers between 10 and 16) of {_gui} to {_i}
+    set slot (integers between 19 and 25) of {_gui} to {_i}
+    set slot (integers between 28 and 34) of {_gui} to {_i}
+    set slot (integers between 37 and 43) of {_gui} to {_i}
+    
+    # MENU BUTTONS
+    set {_i} to barrier named formatted "<#ff5252>Close"
+    set data tag "COSMETICS:BUTTON_ID" of {_i} to "CLOSE"
+    set slot 49 of {_gui} to {_i}
+    
+    # CLEAR
+    set {_i} to tnt named formatted "<#ff5252>Clear Cosmetic"
+    set data tag "COSMETICS:BUTTON_ID" of {_i} to "CLEAR"
+    set slot 4 of {_gui} to {_i}
+    
+    if {_page} > 1:
+        set {_i} to spectral arrow named formatted "<#baff52>Previous Page"
+        set data tag "COSMETICS:BUTTON_ID" of {_i} to "PREV_PAGE"
+        set data tag "COSMETICS:TO_PAGE" of {_i} to {_page} - 1
+        set slot 48 of {_gui} to {_i}
+    
+    if (size of ...{-cosmetic::CFG::hats.keys}) - ({_dex} * {_page}) > 0 :
+        set {_i} to spectral arrow named formatted "<#52ffdc>Next Page"
+        set data tag "COSMETICS:BUTTON_ID" of {_i} to "NEXT_PAGE"
+        set data tag "COSMETICS:TO_PAGE" of {_i} to {_page} + 1
+        set slot 50 of {_gui} to {_i}
+    
+
+    # POPULATE
+    loop ...{-cosmetic::CFG::hats.keys}:
+        loop-counter >= ({_dex} * {_page} - {_dex} + 1)
+        loop-counter <= ({_page} * {_dex})
+        
+        set {_cfg} to {-cosmetic::CFG::hats}.get(loop-value)
+        set {_id} to loop-value
+        set {_perms} to {_cfg}.get("permission")
+        set {_price} to {_cfg}.get("price")
+        set {_model} to {_cfg}.get("item.material").replaceAll("craftengine:", "")
+        set {_name} to {_cfg}.get("item.name")
+        
+        # broadcast {_ID}
+
+        set {_i} to paper
+        set name of {_i} to formatted formatted "<#96c1da>" . {_name}
+        set item model of {_i} to {_model}
+
+        set data tag "COSMETICS:COSM" of {_i} to true
+        set data tag "COSMETICS:ID" of {_i} to {_id}
+        set data tag "COSMETICS:PERMS" of {_i} to {_perms}
+        set data tag "COSMETICS:PRICE" of {_i} to {_price}
+        set data tag "COSMETICS:MODEL" of {_i} to {_model}
+
+        set {_l::*} to {_}
+        
+        if {_p} has permissions {_perms}:
+            add formatted "<#65c06d><b>Kamu punya kosmetik ini" to {_l::*}
+            add formatted "" to {_l::*}
+            add formatted "<#aab6bb><u>Klik untuk memakai kosmetik!" to {_l::*}
+            set lore of {_i} to {_l::*}
+        
+        else:
+            add formatted "<#ca6060><b>Kamu tidak punya kosmetik ini" to {_l::*}
+            add formatted "" to {_l::*}
+            add formatted "<#b48f5f>Harga: 250 CloudCoins" to {_l::*}
+            add formatted "<#aab6bb><u>Klik untuk membeli kosmetik!" to {_l::*}
+            set lore of {_i} to {_l::*}
+
+        set first empty slot of {_gui} to {_i}
+
+    open {_gui} to {_p}
+
+
+
+on inventory click:
+    raw unformatted name of event-inventory is "Cloud Cosmetics"
+    event-inventory is not player's inventory
+    cancel event
+
+
+    if data tag "COSMETICS:COSM" of event-item is true:
+        set {_itemname} to raw unformatted name of event-item
+        set {_id} to data tag "COSMETICS:ID" of event-item
+        set {_perms} to data tag "COSMETICS:PERMS" of event-item
+        set {_price} to data tag "COSMETICS:PRICE" of event-item
+        set {_model} to data tag "COSMETICS:MODEL" of event-item
+
+        set {_cloudcoins} to currency "cloudcoins" of player
+
+        if player has permissions {_perms}:
+            execute console command "/hmccosmetics apply %{_id}% %name of player%"
+            stop
+        
+        if {_cloudcoins} < {_price}:
+            play sound "minecraft:block.note_block.bass" with volume 0.5 with pitch 0.7 to player
+            send formatted formatted {-c::prefix} . " <#cc4a4a>Not enough Cloud Coins!" to player
+            stop
+        
+
+        asyncperms(player, "set", {_perms}, true)
+        play sound "ui.button.click" with volume 0.b5 with pitch 1.4 to player
+        send formatted formatted {-c::prefix} . " <#7ecc4a>Purchased cosmetic for %{_price}% Cloud Coins" to player
+        stop
+    
+
+    set {_btnID} to data tag "COSMETICS:BUTTON_ID" of event-item
+    switch {_btnID}:
+        case "NEXT_PAGE":
+            # send "Next Page"
+            set {_toPage} to data tag "COSMETICS:TO_PAGE" of event-item
+            cosmeticsBrowser(event-player, {_toPage})
+            
+            play sound "item.book.page_turn" with volume 0.5 with pitch 0.8 to player
+        case "PREV_PAGE":
+            # send "Previous Page"
+            set {_toPage} to data tag "COSMETICS:TO_PAGE" of event-item
+            cosmeticsBrowser(event-player, {_toPage})
+            play sound "item.book.page_turn" with volume 0.5 with pitch 0.8 to player
+        case "CLEAR":
+            execute console command "/hmccosmetics unapply HELMET %name of player%"
+            play sound "ui.button.click" with volume 0.5 with pitch 1.4 to player
+        case "CLOSE":
+            close player's inventory
+            play sound "ui.button.click" with volume 0.5 with pitch 1.4 to player

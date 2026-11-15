@@ -1,0 +1,22 @@
+
+# Skript
+# Centralized console actions
+
+effect send [(console|log)] info[rmation] %text%:
+    trigger:
+        send formatted formatted "<light_blue>[CENTRAL] [INFO]" . expr-1 to console
+
+
+effect send [(console|log)] warn[ing] %text%:
+    trigger:
+        send formatted formatted "<gold>[CENTRAL] [WARN]" . expr-1 to console
+
+
+effect send [(console|log)] error %text%:
+    trigger:
+        send formatted formatted "<red>[CENTRAL] [ERROR]" . expr-1 to console
+
+
+effect send [(console|log)] ([severe] exception) %text%:
+    trigger:
+        send formatted formatted "<dark_red>[CENTRAL] [SEVERE]" . expr-1 to console

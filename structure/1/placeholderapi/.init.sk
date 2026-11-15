@@ -1,0 +1,11 @@
+
+import:
+    me.clip.placeholderapi.events.ExpansionsLoadedEvent
+
+on ExpansionsLoadedEvent:
+    send info "%{-G:pass}% PlaceholderAPI reloaded, re-hooking PlaceholderAPI utilities"
+
+    {_name} = script.name()
+    {_path} = script.nameAndPath()
+    {_path} = {_path}.substring(0, length of {_path} - length of {_name})
+    reload script {_path}

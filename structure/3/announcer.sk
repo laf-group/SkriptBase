@@ -1,0 +1,44 @@
+
+# Announcer
+
+# TODO
+# Rewrite everything
+# Complete command registration
+
+on load:
+    {-$sound} = "BLOCK_NOTE_BLOCK_PLING"
+    {-$pitch} = 2
+    {-$volume} = 0.1
+
+    {_name} = script.name()
+    {_path} = script.nameAndPath()
+    {_path} = {_path}.substring(0, length of {_path} - length of {_name})
+    {_file} = "announcer.yml"
+    {-$list::*} = ...yml({_path} . "/" . {_file}).get("list")
+
+
+# Reload command
+command /uareload:
+    permission: *
+    trigger:
+        execute player command "skript reload /3/announcer"
+        send formatted formatted {-c::prefix} . " <red>Ultimate Announcements has been reloaded!" to console, player
+        
+
+# Help command
+command /uahelp:
+    trigger:
+        add " " to {_t::*}
+        add "<##33A6FF>Ultimate Announcements Help" in smallcase to {_t::*}
+        add "<##DCF0FF>/uareload &8- &7Reload Ultimate Announcement" to {_t::*}
+        add "<##DCF0FF>/uahelp &8- &7Shows this page" to {_t::*}
+        add " " to {_t::*}
+        send formatted join {_t::*} with newline to player
+
+
+every 2 minutes:
+    add " " to {_t::*}
+    add (random element out of {-$list::*}) . " " to {_t::*}
+    # add " " to {_t::*}
+    send formatted join {_t::*} with newline to all players
+    play sound {-$sound} with volume {-$volume} and pitch {-$pitch} to all players

@@ -1,0 +1,15 @@
+
+# Skript
+# Init -> Load Global (G:) Colors, Prefix
+
+on load:
+    {-G:prefix} = formatted ("<gradient:#ffc65d:#ece57e><b>" . "Laf" in smallcase)
+    {-G:error} = formatted "<#d43c3c>"
+    {-G:warn} = formatted "<#ebb062>"
+    {-G:pass} = formatted "<#77e76d>"
+    {-G:1} = formatted "<#d7dddf>"
+    {-G:2} = formatted "<#8c9396>"
+    {-G:3} = formatted "<#484b4d>"
+
+papi placeholder with prefix "serverprefix":
+    result = raw {-G:prefix}

@@ -1,0 +1,268 @@
+
+# Skidded chat filter
+
+# TODO
+# Rewrite everything
+
+
+# ========================================== #
+#                                            #
+#         Filter v2.2 ULTRA STRICT           #
+#     ANTI-BYPASS & ANTI FALSE-POSITIVE      #
+#                                            #
+# ========================================== #
+options:
+	# === Permissions ===
+	filterBypass: skript.filter.bypass
+	filterNotify: skript.filter.notify
+
+	# === Prefix ===
+	filterPrefix: &b&lғɪʟᴛᴇʀ &7|&r
+
+	# === ANTI SPAM ===
+	spamCooldown: 3
+	spamMaxRepeat: 3
+
+	# === ANTI CAPS ===
+	maxCapsPercent: 80
+	minCapsLength: 6
+
+	# === ANTI HURUF BERULANG ===
+	maxRepeatChar: 10
+
+	# === WHITELIST WORDS ===
+	whitelistWords: bot,botol,bottle,bottom,smelter,smelting,pickaxe,axe,shovel,sword,hoe,helmet,chestplate,leggings,boots,efficiency,unbreaking,fortune,silk,touch,mending,sharpness,knockback,fire,aspect,looting,power,punch,flame,infinity,protection,thorns,respiration,aqua,affinity,feather,falling,depth,strider,soul,speed,swift,sneak,curse,vanishing,binding,multishot,piercing,quick,charge,riptide,loyalty,channeling,impaling,blast,projectile,smite,bane,arthropods,latain,anjinglaut,anjingtanah,babiutan,monyetlucu,kasur,lanjut,lanjutan,melanjutkan,masuk,tulisan,tulis,menulis,ditulis,penulis,tertulis,tulip,pantai,lantai,melantai,lantainya,santai,bersantai,rantai,cintai,intai,dicintai,mencintai,tercintai,mengintai,pengintai,terintai,berantai,sertai,menyertai,disertai,pesertai,terata,teratai,petai,gontai,asumsi,asuransi,asuh,asuhan,mengasuh,pengasuh,diasuh,basuh,membasuh,basura,kasut,klausul,panjang,ranjang,manja,memanjakan,tanjung,sanjung,menyanjung,anjuran,menganjurkan,belanja,berbelanja,pembelanjaan,terlanjur,telanjur,lanjur,anjung,telanjang,robot,botol,botani,sabotase,sabot,menyabot,bobot,robotik,botoh,kebotakan,botak,knalpot,reboot,rebot,boot,chatbot,metode,metodologi,ortodoks,katoda,otot,total,tonton,tontonan,menonton,penonton,totem,colin,ecoli,pejuang,pejuangan,rambutan,sambutan,rebutan,sebutan,lembutan,cabutan,butana,bisul,bisulan,cewek,cewe,sewelas,pewe,memekak,memekar,memekik,pelihara,peliharaan,peliharan,terpelihara,pemeliharaan,pemeliharan,pelican,pelindung,melindungi,perlindungan,pelintir,pelipur,pelipis,pelita,lintas,pelintas,melintas,terlintas,pelik,suplir,tetangga,tetanga,tetanggan,tetangan,tetes,tetesan,menetes,diteteskan,tetanus,ditilang,ditilik,todong,gaya,bergaya,gayung,gayut,gayatri,cctv,ctv,ppkm,pkm,ppkn,pkn,ppki,pki,begonia,buritan,ngabuburit,nenenda,menendang,penendang,kalian,jangan,bisa,gabisa,gakbisa,gakbisaa,gabisaa,abis,habis,akunku,lkzue,jaa,ja,lah,dah
+
+	# === STRICT MANUAL FILTER ===
+	manualBlockedWords: anjing,kikir,k1k1r,kkir,choly,monyet,ppk,kontol,asu,ngentot,coli,ngocok,ampas,onani,masturbasi,gay,memek,lesbi,ewe,ngewe,babikau,anjingkau,pukimak,kimak,pemai,ajg,tai,anjg,yatim,yapit,piatu,anakyatim,bangsat,anjir,anj,ayamkampus,bacot,babi,banci,bendot,bego,bejat,bencong,berengsek,bisu,tuli,bodoh,dongo,idiot,tolol,buta,cacat,dungu,cupu,cungkring,cct,gembel,kntl,ktl,kntol,ktol,kancut,kanjut,kampang,kaparat,lgbt,lonte,me2k,mampus,noob,pantat,phantat,porno,crot,peju,mani,cipok,ngewek,bdsm,pantek,burit,tepos,kampret,kontop,kontoo,kontl,jnck,jncok,ngtot,ngntot,ngtt,dngo,sagne,sgne,snge,montok,semok,bohai,sangek,choli,col1,gblk,hpkentang,sodok,aj9,cuki,jentod,kroco,kecot,gendeng,jancok,tod,kh0ntl,k0nt0l,ch0li,bokep,kintil,ajng,jing,tholol,tot,itil,pentil,tete,titid,vagina,penis,colly,collly,nenen,n3nen,n3n3n,nen3n,nenenn,akialsmp,pixra,pixa,luckynetwork,nete,ytm,tempek,tlol,thlol,tl0l,tol0l,tll,gblg,goblok,gobl0k,kntll,kntall,asw,tl0,tlo,toolol,goblokk,g0bl0k,kntal,peli,plir,pler,memekku,memekmu,ngent0t,ngentd,ngentt,ngew,bngst,bgst,pukimk,pukymak,pkmk,kmak,pntk,panttek,ajggg,anjingg,b4bi,bby,b4b1,yatimmm,piatuu,bangsattt,bgsat,bjgn,bjngn,asuu,krocooo,sangeee,lonteee,l0nte,lnt,peler,ngob0p,wkwkwkkwkkwkwkkwkwkwkkwwkkwkw,tempek
+
+# ======================== #
+#        CHAT FILTER       #
+# ======================== #
+on chat with priority low:
+	# === BYPASS ===
+	if player has permission "{@filterBypass}":
+		stop
+
+	set {_rawMsg} to message
+
+	# === ANTI SPAM: COOLDOWN ===
+	if {filter.cooldown::%player's uuid%} is set:
+		cancel event
+		send "{@filterPrefix} &cKamu mengirim pesan terlalu cepat! Tunggu beberapa detik." to player
+		stop
+
+	# =============================== #
+	#    ANTI SPAM: PESAN BERULANG    #
+	# =============================== #
+	set {_normalMsg} to lowercase message
+	replace all "[i]" with "" in {_normalMsg}
+	replace all "[item]" with "" in {_normalMsg}
+	replace all "[inv]" with "" in {_normalMsg}
+	replace all "[inventory]" with "" in {_normalMsg}
+	replace all "[ender]" with "" in {_normalMsg}
+	replace all "[enderchest]" with "" in {_normalMsg}
+	replace all " " with "" in {_normalMsg}
+	replace all "." with "" in {_normalMsg}
+	replace all "," with "" in {_normalMsg}
+	replace all "!" with "" in {_normalMsg}
+	replace all "?" with "" in {_normalMsg}
+
+	set {_lastCount} to {filter.repeatcount::%player's uuid%}
+	if {_lastCount} is not set:
+		set {_lastCount} to 0
+	set {_lastMsg} to {filter.lastmsg::%player's uuid%}
+	if {_lastMsg} is set:
+		if {_normalMsg} is {_lastMsg}:
+			add 1 to {_lastCount}
+			set {filter.repeatcount::%player's uuid%} to {_lastCount}
+			if {_lastCount} >= {@spamMaxRepeat}:
+				cancel event
+				send "{@filterPrefix} &cJangan mengulang pesan yang sama! (&f%{_lastCount}%x&c berturut-turut)" to player
+				stop
+		else:
+			set {filter.repeatcount::%player's uuid%} to 0
+	set {filter.lastmsg::%player's uuid%} to {_normalMsg}
+
+	# =============================== #
+	#    ANTI CAPS - AUTO CONVERT     #
+	# =============================== #
+	set {_capsCheckMsg} to {_rawMsg}
+	replace all "[i]" with "" in {_capsCheckMsg}
+	replace all "[item]" with "" in {_capsCheckMsg}
+	replace all "[inv]" with "" in {_capsCheckMsg}
+	replace all "[inventory]" with "" in {_capsCheckMsg}
+	replace all "[ender]" with "" in {_capsCheckMsg}
+	replace all "[enderchest]" with "" in {_capsCheckMsg}
+
+	set {_msgLen} to length of {_capsCheckMsg}
+	if {_msgLen} >= {@minCapsLength}:
+		set {_capsCount} to 0
+		set {_chars::*} to split {_capsCheckMsg} at ""
+		loop {_chars::*}:
+			set {_c} to loop-value
+			if {_c} is "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z":
+				add 1 to {_capsCount}
+		set {_capsPercent} to {_capsCount} * 100 / {_msgLen}
+		if {_capsPercent} >= {@maxCapsPercent}:
+			set message to lowercase {_rawMsg}
+			send "{@filterPrefix} &7Pesanmu otomatis dikonversi ke huruf kecil." to player
+
+	# =============================== #
+	#    ANTI HURUF BERULANG BERLEBIH #
+	# =============================== #
+	set {_checkMsg} to lowercase message
+	replace all "[i]" with "" in {_checkMsg}
+	replace all "[item]" with "" in {_checkMsg}
+	replace all "[inv]" with "" in {_checkMsg}
+	replace all "[inventory]" with "" in {_checkMsg}
+	replace all "[ender]" with "" in {_checkMsg}
+	replace all "[enderchest]" with "" in {_checkMsg}
+
+	set {_checkChars::*} to split {_checkMsg} at ""
+	set {_prevChar} to ""
+	set {_charStreak} to 1
+	loop {_checkChars::*}:
+		set {_curChar} to loop-value
+		if {_curChar} is {_prevChar}:
+			add 1 to {_charStreak}
+			if {_charStreak} > {@maxRepeatChar}:
+				cancel event
+				send "{@filterPrefix} &cJangan menggunakan huruf yang sama berulang-ulang! (maks {@maxRepeatChar}x)" to player
+				stop
+		else:
+			set {_charStreak} to 1
+		set {_prevChar} to {_curChar}
+
+	# ================================================== #
+	#    SISTEM NORMALISASI & DETEKSI TOXIC ULTRA STRICT #
+	# ================================================== #
+	set {_msgClean} to lowercase message
+
+	# 1. Hapus Placeholder InteractiveChat
+	replace all "[i]" with "" in {_msgClean}
+	replace all "[item]" with "" in {_msgClean}
+	replace all "[inv]" with "" in {_msgClean}
+	replace all "[inventory]" with "" in {_msgClean}
+	replace all "[ender]" with "" in {_msgClean}
+	replace all "[enderchest]" with "" in {_msgClean}
+
+	# 2. Hapus Nama Player yang Mengirim Pesan (Mencegah false positive dari nama player sendiri)
+	set {_pName} to lowercase player's name
+	replace all {_pName} with "" in {_msgClean}
+
+	# 3. Normalisasi Leetspeak
+	replace all "@" with "a" in {_msgClean}
+	replace all "0" with "o" in {_msgClean}
+	replace all "1" with "i" in {_msgClean}
+	replace all "!" with "i" in {_msgClean}
+	replace all "3" with "e" in {_msgClean}
+	replace all "4" with "a" in {_msgClean}
+	replace all "5" with "s" in {_msgClean}
+	replace all "7" with "t" in {_msgClean}
+	replace all "8" with "b" in {_msgClean}
+	replace all "9" with "g" in {_msgClean}
+
+	# 4. Hapus Kata Whitelist SEBELUM Menghapus Spasi
+	set {_whitelist::*} to split "{@whitelistWords}" at ","
+	loop {_whitelist::*}:
+		set {_w} to loop-value
+		if {_msgClean} contains {_w}:
+			replace all {_w} with "" in {_msgClean}
+
+	# 5. Pembersihan Karakter Spesial & Spasi
+	replace all " " with "" in {_msgClean}
+	replace all "." with "" in {_msgClean}
+	replace all "," with "" in {_msgClean}
+	replace all "-" with "" in {_msgClean}
+	replace all "_" with "" in {_msgClean}
+	replace all "*" with "" in {_msgClean}
+	replace all "/" with "" in {_msgClean}
+	replace all "\" with "" in {_msgClean} #"
+	replace all "|" with "" in {_msgClean}
+	replace all "+" with "" in {_msgClean}
+	replace all "=" with "" in {_msgClean}
+	replace all "~" with "" in {_msgClean}
+	replace all "?" with "" in {_msgClean}
+	replace all "^" with "" in {_msgClean}
+	replace all "&" with "" in {_msgClean}
+	replace all "%%" with "" in {_msgClean}
+	replace all "#" with "" in {_msgClean}
+	replace all "(" with "" in {_msgClean}
+	replace all ")" with "" in {_msgClean}
+	replace all "[" with "" in {_msgClean}
+	replace all "]" with "" in {_msgClean}
+	replace all "{" with "" in {_msgClean}
+	replace all "}" with "" in {_msgClean}
+	replace all "<" with "" in {_msgClean}
+	replace all ">" with "" in {_msgClean}
+	replace all ";" with "" in {_msgClean}
+	replace all ":" with "" in {_msgClean}
+	replace all """" with "" in {_msgClean}
+	replace all "'" with "" in {_msgClean}
+	replace all "`" with "" in {_msgClean}
+
+	# Jika pesan menjadi kosong
+	if {_msgClean} is "":
+		set {filter.cooldown::%player's uuid%} to true
+		wait {@spamCooldown} seconds
+		delete {filter.cooldown::%player's uuid%}
+		stop
+
+	# 6. Buat Versi Collapsed
+	set {_msgCleanCollapsed} to ""
+	set {_prevCharClean} to ""
+	set {_charsClean::*} to split {_msgClean} at ""
+	loop {_charsClean::*}:
+		set {_c} to loop-value
+		if {_c} is not {_prevCharClean}:
+			set {_msgCleanCollapsed} to "%{_msgCleanCollapsed}%%{_c}%"
+			set {_prevCharClean} to {_c}
+
+	# 7. Cek Terhadap Daftar Kata Terlarang
+	set {_manual::*} to split "{@manualBlockedWords}" at ","
+	set {_isToxic} to false
+	set {_blocked} to ""
+	loop {_manual::*}:
+		set {_toxicWord} to loop-value
+
+		if {_msgClean} contains {_toxicWord}:
+			set {_blocked} to {_toxicWord}
+			set {_isToxic} to true
+			exit loop
+		else if {_msgCleanCollapsed} contains {_toxicWord}:
+			set {_blocked} to {_toxicWord}
+			set {_isToxic} to true
+			exit loop
+
+	# 8. Eksekusi Jika Terbukti Toxic
+	if {_isToxic} is true:
+		cancel event
+		send "{@filterPrefix} &cChat anda difilter, anda mencoba mengatakan (&f%{_blocked}%&c)" to player
+		loop all players:
+			if loop-player has permission "{@filterNotify}":
+				send "{@filterPrefix} &b%player% &7mencoba mengatakan kata terlarang: &f%{_blocked}%" to loop-player
+		stop
+
+	# === SET COOLDOWN (Lolos Filter) ===
+	set {filter.cooldown::%player's uuid%} to true
+	wait {@spamCooldown} seconds
+	delete {filter.cooldown::%player's uuid%}
+
+# ======================== #
+#      CLEANUP ON QUIT     #
+# ======================== #
+on quit:
+	delete {filter.cooldown::%player's uuid%}
+	delete {filter.lastmsg::%player's uuid%}
+	delete {filter.repeatcount::%player's uuid%}
+
+# ======================== #
+#        CLEAR CHAT        #
+# ======================== #
+command /clearchat:
+	permission: clearchat.use
+	permission message: &cKamu tidak punya izin untuk menggunakan command ini.
+	trigger:
+		loop 150 times:
+			broadcast ""

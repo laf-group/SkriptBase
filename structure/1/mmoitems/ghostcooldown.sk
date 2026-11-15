@@ -1,0 +1,34 @@
+
+# Skript Reflect
+# Prevent ghost reset attack cooldown
+# when dealing damage without actively
+# swinging item
+
+# TODO
+# Bedrock compat
+
+import:
+    com.destroystokyo.paper.event.player.PlayerAttackEntityCooldownResetEvent
+
+
+on load:
+    {-$module} = "MIGhostCooldownFix"
+    send info "%{-G:pass} . {-$module}% loaded"
+
+
+on arm swing:
+    {_p} = name of player
+    {-justSwing::%{_p}%} = now # Only flag on the same tick
+    
+    # if {_p} contains ".": # Bedrock
+    #     {-justSwingBugrock::%{_p}%} = ceil(player.getCooldownPeriod()) ticks later
+
+
+on PlayerAttackEntityCooldownResetEvent with priority lowest:
+    {_p} = event.getPlayer().getName()
+    if any:
+        ticks of time since {-justSwing::%{_p}%} > 0 # Not happening in the same tick
+        {-justSwing::%{_p}%} is not set # Or is not set (never swung after variable deleted)
+    then:
+        cancel event # Cancel then, probably not caused by swinging
+        delete {-justSwing::%{_p}%}

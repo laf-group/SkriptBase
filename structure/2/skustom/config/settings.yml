@@ -1,0 +1,190 @@
+
+# Tiers that can be applied to items, fallback to default-stats.item-tier
+tiers:
+  TRASH:
+    display: "Trash"
+    color: "<#505455>"
+  COMMON:
+    display: "Common"
+    color: "<#b2bdbe>"
+  UNCOMMON:
+    display: "Uncommon"
+    color: "<#67b467>"
+  RARE:
+    display: "Rare"
+    color: "<#6386bb>"
+  EPIC:
+    display: "Epic"
+    color: "<#804b96>"
+  LEGENDARY:
+    display: "Legendary"
+    color: "<#cc9f4c>"
+  MYTHICAL:
+    display: "Mythical"
+    color: "<#9c527b>"
+  GODLY:
+    display: "Godly"
+    color: "<#a85151>"
+
+
+# Registered item types list
+# Will generate a .yml file under items/ folder
+types:
+  BLADE:
+    display: "Blade"
+  BOW:
+    display: "Bow"
+  STAFF:
+    display: "Staff"
+  ARMOR:
+    display: "Armor"
+  MATERIAL:
+    display: "Material"
+
+
+# Default stats for all items
+default-stats:
+  # Its possible to also assign normal stats here, but is not recommended
+  # attack-damage: 1
+  # attack-speed: 4
+  item-tier: TRASH
+  unbreakable: true
+  custom-behavior:
+    interaction: false # Cannot hit and interact normally/using vanilla behavior
+    swing-speed: true # Each swing follows attack-speed, spam clicking will not register
+  hidden-tooltip:
+    - additional_trade_cost
+    - attack_animation
+    - attack_range
+    - attribute_modifiers
+    - axolotl/variant
+    - banner_patterns
+    - base_color
+    - bees
+    - block_entity_data
+    - block_state
+    - block_transformer
+    - blocks_attacks
+    - break_sound
+    - brewing_fuel
+    - bucket_entity_data
+    - bundle_contents
+    - can_break
+    - can_place_on
+    - cat/collar
+    - cat/sound_variant
+    - cat/variant
+    - charged_projectiles
+    - chicken/sound_variant
+    - chicken/variant
+    - compostable
+    - consumable
+    - container
+    - container_loot
+    - cooking_fuel
+    - cow/sound_variant
+    - cow/variant
+    - creative_slot_lock
+    - cushion/color
+    - custom_data
+    - custom_model_data
+    - custom_name
+    - damage
+    - damage_resistant
+    - damage_type
+    - death_protection
+    - debug_stick_state
+    - dye
+    - dyed_color
+    - enchantable
+    - enchantment_glint_override
+    - enchantments
+    - entity_data
+    - equippable
+    - firework_explosion
+    - fireworks
+    - food
+    - fox/variant
+    - frog/variant
+    - glider
+    - horse/variant
+    - instrument
+    - intangible_projectile
+    - interact_animation
+    - item_model
+    - item_name
+    - jukebox_playable
+    - kinetic_weapon
+    - llama/variant
+    - lock
+    - lodestone_tracker
+    # - lore
+    - map_decorations
+    - map_id
+    - map_post_processing
+    - max_damage
+    - max_stack_size
+    - minimum_attack_charge
+    - mob_visibility
+    - mooshroom/variant
+    - note_block_sound
+    - ominous_bottle_amplifier
+    - painting/variant
+    - parrot/variant
+    - piercing_weapon
+    - pig/sound_variant
+    - pig/variant
+    - pot_decorations
+    - potion_contents
+    - potion_duration_scale
+    - profile
+    - provides_banner_patterns
+    - provides_pottery_pattern
+    - provides_trim_material
+    - rabbit/variant
+    - rarity
+    - recipes
+    - repair_cost
+    - repairable
+    - salmon/size
+    - sheep/color
+    - shulker/color
+    - sign_text_back
+    - sign_text_front
+    - stored_enchantments
+    - sulfur_cube_content
+    - suspicious_stew_effects
+    - tool
+    - tooltip_display
+    - tooltip_style
+    - trim
+    - tropical_fish/base_color
+    - tropical_fish/pattern
+    - tropical_fish/pattern_color
+    - unbreakable
+    - use_cooldown
+    - use_effects
+    - use_remainder
+    - villager/variant
+    - villager_food
+    - waxed
+    - weapon
+    - wolf/collar
+    - wolf/sound_variant
+    - wolf/variant
+    - writable_book_content
+    - written_book_content
+    - zombie_nautilus/variant
+
+
+# If a stats is not set for a player, fallback to these values
+stats-fallback:
+  attack-speed: 1024
+  crit-chance: 5
+  crit-damage: 200
+
+  health-max: 20
+  mana-max: 10
+
+  health-regen: 0.1
+  mana-regen: 0.2

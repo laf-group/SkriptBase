@@ -1,0 +1,13 @@
+
+# Skript Reflect
+# Instant empty Json object
+
+import:
+    com.google.gson.JsonObject
+    com.google.gson.JsonParser
+
+function newJson(data: text = "{}"):: object:
+    return json({_data})
+
+function json(data: text = "{}"):: object:
+    return JsonParser.parseString({_data}).getAsJsonObject()

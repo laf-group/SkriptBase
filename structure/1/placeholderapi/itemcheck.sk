@@ -1,0 +1,64 @@
+
+# Skript Reflect, PlaceholderAPI, Skript Placeholder
+# NBT Item check
+# Only chekcs minecraft:custom_data component of item's NBT data
+
+
+on load:
+    {-$module} = "PAPIItemCheck"
+    send info "%{-G:pass} . {-$module}% loaded"
+
+
+# itemcheck_player:player_name;slot:slot_name;check:MMOITEMS_ITEM_ID=ITEM_ID
+# slot - MAINHAND/HAND, OFFHAND, HELMET/HEAD, CHESTPLATE/BODY, LEGGINGS/LEGS, BOOTS/FEET
+# return - yes (match), no (not match), offline (player cannot be checked), error (some error)
+
+# itemcheck_Laughtr_;OFFHAND;MMOITEMS_ITEM_ID=DAMASKUS_GAUNTLET
+papi placeholder with prefix "itemcheck":
+    # wait 0 ticks
+    {_arg::*} = identifier split at ";"
+
+    {_player} = {_arg::1} parsed as player
+    {_slot} = {_arg::2}
+    {_check::*} = {_arg::3} split at "="
+
+    if {_player} is offline:
+        result = "error (offline)"
+        send error "Player not found"
+        stop
+    
+    {_key} = {_check::1}
+    {_value} = {_check::2}
+    
+    if any:
+        {_key} is not set
+        {_value} is not set
+    then:
+        result = "error (invalid key=value)"
+        send error "Invalid key=value"
+        stop
+
+    if {_slot} is "HAND" or "MAINHAND":
+        {_item} = tool of {_player}
+    else if {_slot} is "OFF" or "OFFHAND":
+        {_item} = offhand tool of player
+    else if {_slot} is "HELMET" or "HEAD":
+        {_item} = helmet of player
+    else if {_slot} is "CHESTPLATE" or "BODY":
+        {_item} = chestplate of player
+    else if {_slot} is "LEGGINGS" or "LEGS":
+        {_item} = leggings of player
+    else if {_slot} is "BOOTS" or "FEET":
+        {_item} = boots of player
+    
+    {_nbt} = compound tag "minecraft:custom_data" of nbt of {_item}
+    if {_nbt} is not set:
+        result = "error (empty custom_data)"
+        send error "Empty minecraft:custom_data"
+        stop
+
+    if (string tag {_key} of {_nbt}) is {_value}:
+        result = "yes"
+        stop
+
+    result = "no"

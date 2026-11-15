@@ -1,0 +1,95 @@
+
+# Skript Reflect, ShopGUI+ (config only)
+# ShopGUI+ config -> Dialog screen
+# Current development stopped
+
+# TODO
+# Continue project
+
+import:
+    java.io.File
+
+on load:
+    {_path} = "plugins/Skript/scripts/2/market"
+
+    {_shopDirectory} = new File({_path} . "/shops/")
+    {_shop::*} = ...{_shopDirectory}.listFiles()
+    for {_shop} in {_shop::*}:
+        {_yml} = yml({_shop}.toString())
+        {_name} = {_yml}.get("title")
+        {_id} = first element of (split {_shop}.getName() at ".")
+        # broadcast formatted ("ID: " . {_id})
+        # broadcast formatted ("NAME: " . {_name})
+        {market::shopCategory::%{_id}%::id} = {_id}
+        {market::shopCategory::%{_id}%::name} = {_name}
+        {market::shopCategory::%{_id}%::config} = {_yml}
+    
+    for {_p} in all players:
+        shop({_p})
+
+local function shop(p: player, category: string = {_}):
+    open new multi action dialog to {_p}:
+        title: formatted "%space(5000)%"
+
+        columns: 1
+        after_action: "none"
+
+        body:
+            add text body:
+                contents: formatted "<gradient:#56c290:#bfe9d5:#7acaa2>Market<reset>"
+            add text body:
+                contents: formatted " "
+
+        actions:
+            
+            for {_key} in (indices of {market::shopCategory::*}):
+                broadcast {_key}
+                {_id} = {market::shopCategory::%{_key}%::id}
+                {_name} = {market::shopCategory::%{_key}%::name}
+                # {_yml} = {market::shopCategory::%{_key}%::yml}
+
+                {_payload} = yml()
+                {_payload}.set("action", "open_shop")
+                {_payload}.set("shop", "%{_id}%")
+                {_payload}.set("player", "%{_p}%")
+                add dynamic action button:
+                    label: formatted "%{_id} in propercase%"
+                    id: "market:button"
+                    tooltip: formatted "<#cee6da>Open %{_id} in propercase% Shop"
+                    width: 200
+                    additions: nbt from "{payload: '%encode {_payload}.saveToString() with base64%'}"
+            
+            # SPACER
+            for {_n} in integers from 1 to 2:
+                {_payload} = yml()
+                {_payload}.set("action", "none")
+                {_payload}.set("shop", "%{_id}%")
+                {_payload}.set("player", "%{_p}%")
+                add dynamic action button:
+                    label: formatted " "
+                    id: "market:button"
+                    width: 1
+                    additions: nbt from "{payload: '%encode {_payload}.saveToString() with base64%'}"
+            
+            if {_category} is set:
+                {_payload} = yml()
+                {_payload}.set("action", "back")
+                {_payload}.set("shop", "%{_id}%")
+                {_payload}.set("player", "%{_p}%")
+                add dynamic action button:
+                    label: formatted "<#4854c2><b><"
+                    id: "market:button"
+                    tooltip: formatted "<#cee6da>Back"
+                    width: 150
+                    additions: nbt from "{payload: '%encode {_payload}.saveToString() with base64%'}"
+
+            {_payload} = yml()
+            {_payload}.set("action", "close")
+            {_payload}.set("shop", "%{_id}%")
+            {_payload}.set("player", "%{_p}%")
+            add dynamic action button:
+                label: formatted "<#c24848><b>❌"
+                id: "market:button"
+                tooltip: formatted "<#cee6da>Close Shop"
+                width: 150
+                additions: nbt from "{payload: '%encode {_payload}.saveToString() with base64%'}"

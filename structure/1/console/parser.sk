@@ -1,0 +1,26 @@
+
+# Skript
+# Console parser
+# This is unsafe, only for development purposes
+
+on command with priority lowest:
+    (raw full command) starts with ">>"
+    sender is console
+    {_ff} = "%(raw full command)%"
+    replace all ">>" with "" in {_ff}
+    eval {_ff} as sender
+    cancel event
+
+command />>> <args: text>:
+    permission: *
+    trigger:
+        sender is console
+        {_ff} = "%(raw {_args})%"
+        eval {_ff} as sender
+
+on chat with priority lowest:
+    (raw message) starts with ">>"
+    {_ff} = "%(raw message)%"
+    replace all ">>" with "" in {_ff}
+    eval {_ff} as sender
+    cancel event

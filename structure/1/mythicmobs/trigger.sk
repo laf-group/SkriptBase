@@ -1,0 +1,38 @@
+
+# Skript Reflect, MythicMobs
+# Custom Trigger register
+
+import:
+    io.lumine.mythic.bukkit.events.MythicReloadedEvent
+    io.lumine.mythic.bukkit.events.MythicMobSpawnEvent
+    io.lumine.mythic.api.skills.SkillTrigger
+    io.lumine.mythic.bukkit.MythicBukkit
+
+
+on load:
+    {-$module} = "MMCustomTriggers"
+    send info "%{-G:pass} . {-$module}% loaded"
+
+
+# On spawned/plugin reloaded trigger
+# ~ONLOADED
+on load:
+    {-$mm} = MythicBukkit.inst()
+    {-$eventBus} = {-$mm}.getSkillManager().getEventBus()
+    {-$trigger} = SkillTrigger.create("LOADED", ("SPAWN_OR_LOADED", "SPAWNORLOADED", "RELOADED"))
+    {-$trigger}.register()
+
+on MythicReloadedEvent:
+    wait 1 seconds:
+        loop ...MythicBukkit.inst().getMobManager().getActiveMobs():
+            onLoaded(loop-value)
+
+on MythicMobSpawnEvent:
+    wait 1 ticks:
+        onLoaded(event.getMob())
+
+local function onLoaded(mob: object) :: object:
+    {_skills} = {_mob}.getType().getSkills({-$trigger})
+    {_skills} is set
+    {_skills}.isEmpty() is false
+    {-$eventBus}.processTrigger({-$trigger}, {_mob}, {_}, false)

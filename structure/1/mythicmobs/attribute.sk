@@ -1,0 +1,27 @@
+
+# Skript, MythicMobs
+# Player attribute utilities
+
+# TODO
+# Finish Temporary Attribute Modifier
+
+on load:
+    {-$module} = "MMAttributeCleaner"
+    send info "%{-G:pass} . {-$module}% loaded"
+
+
+on quit:
+    delete jump strength attribute modifiers of player
+    delete movement speed attribute modifiers of player
+
+
+# function tempAttributeModifier(player: player, attribute: attribute type, id: string, amount: number, operation: attribute operation, duration: timespan) :: object:
+#     apply attribute modifier to {_player}:
+#         attribute: {_attribute} ? attack damage
+#         id: {_id} ? "skript:attack_damage"
+#         amount: {_amount} ? 1
+#         operation: {_operation} ? add_number
+    
+#     wait {_duration} ? 1 seconds:
+#         {_player} is online
+#         remove attribute modifier with key {_id} from {_player}

@@ -1,0 +1,83 @@
+
+# Skript
+# Disable natural health regeneration on combat
+
+on load:
+    # Initialize the combat tag list if it doesn't exist
+    if {-combatregen::tagged::*} is not set:
+        set {-combatregen::tagged::*} to {_}
+
+# --- Combat Tagging (PvP and PvE) ---
+on damage:
+    if attacker is player:
+        # Tag the attacker (always)
+        if {-combatregen::tagged::%name of attacker%} is not set:
+            combatWarn(attacker)
+
+        set {-combatregen::tagged::%name of attacker%} to true
+        set {-combatregen::lasthit::%name of attacker%} to 5 seconds later
+        
+        # If the victim is a player, tag them too (PvP)
+        if victim is player:
+            if {-combatregen::tagged::%name of victim%} is not set:
+                combatWarn(victim)
+
+            set {-combatregen::tagged::%name of victim%} to true
+            set {-combatregen::lasthit::%name of victim%} to 5 seconds later
+
+
+# --- Disable Natural Regeneration while Tagged ---
+on heal of player:
+    heal reason is satiated
+    if {-combatregen::tagged::%name of player%} is true:
+        cancel event
+
+# --- Combat Timeout Logic (5 Seconds since last hit) ---
+# Using a repeating task to check timestamps is cleaner than relying on "wait" inside damage events,
+# which can overlap if a player is hit multiple times quickly.
+every 10 ticks:
+    loop all players:
+        set {_p} to loop-player
+        
+        if {-combatregen::tagged::%name of {_p}%} is true:
+            # Check if the player has a last-hit timestamp
+            if {-combatregen::lasthit::%name of {_p}%} is set:
+                set {_timeSince} to ticks of time since {-combatregen::lasthit::%name of {_p}%}
+                
+                if {_timeSince} > 0:
+                    # Timeout expired: remove tag and timestamp
+                    if {-combatregen::tagged::%name of {_p}%} is set:
+                        combatLeave({_p})
+
+                    delete {-combatregen::tagged::%name of {_p}%}
+                    delete {-combatregen::lasthit::%name of {_p}%}
+            else:
+                # Failsafe: If tagged but no timestamp exists, remove the tag
+                if {-combatregen::tagged::%name of {_p}%} is set:
+                    combatLeave({_p})
+
+                delete {-combatregen::tagged::%name of {_p}%}
+
+# --- Failsafes: Remove Tag on Death or Quit ---
+on death of player:
+    if {-combatregen::tagged::%name of victim%} is set:
+        combatLeave(victim)
+
+    delete {-combatregen::tagged::%name of victim%}
+    delete {-combatregen::lasthit::%name of victim%}
+
+on quit:
+    if {-combatregen::tagged::%name of player%} is set:
+        combatLeave(player)
+
+    delete {-combatregen::tagged::%name of player%}
+    delete {-combatregen::lasthit::%name of player%}
+
+
+local function combatWarn(p: player):
+    add formatted "<#c95757>Kamu masuk Combat Tag. Regenerasi health natural dihentikan." to {_t::*}
+    send formatted formatted (join {_t::*} with newline) to {_p}
+
+local function combatLeave(p: player):
+    add formatted "<#90d146>Combat Tag berakhir. Regenerasi health natural dinyalakan." to {_t::*}
+    send formatted formatted (join {_t::*} with newline) to {_p}

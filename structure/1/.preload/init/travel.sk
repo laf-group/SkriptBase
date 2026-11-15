@@ -1,0 +1,72 @@
+
+import:
+    ch.njol.skript.Skript
+    org.bukkit.Bukkit
+    org.bukkit.NamespacedKey
+    com.google.gson.GsonBuilder
+    org.bukkit.advancement.Advancement
+    org.bukkit.advancement.AdvancementProgress
+    net.kyori.adventure.text.minimessage.MiniMessage
+    net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+
+function sendToast(p: player, icon: string, frame: string, title: string):
+    set {_id} to new NamespacedKey(Skript.getInstance(), random uuid.toString())
+    
+    set {_title} to (raw raw LegacyComponentSerializer.legacyAmpersand().serialize(formatted formatted {_title})).content.replaceAll("&", "§")
+    # broadcast raw raw {_title}
+    # set {_title} to {_title}.toString().replaceAll("&", "§")
+    set {_icon} to {_icon} in lowercase  
+    set {_frame} to {_frame} in lowercase
+
+    set {_json} to newJson()
+    set {_iconJson} to newJson()
+    {_iconJson}.addProperty("id", {_icon})
+    set {_display} to newJson()
+    {_display}.add("icon", {_iconJson})
+    {_display}.addProperty("title", {_title})
+    {_display}.addProperty("description", "")
+    {_display}.addProperty("background", "")
+    {_display}.addProperty("frame", {_frame} if ("goal", "task", "challenge") contains {_frame} else "goal") # GOAL TASK CHALLENGE
+    {_display}.addProperty("announce_to_chat", false)
+    {_display}.addProperty("show_toast", true) # This is what makes it a toast!
+    {_display}.addProperty("hidden", true)
+    
+    set {_criteria} to newJson()
+    set {_trigger} to newJson()
+    {_trigger}.addProperty("trigger", "minecraft:impossible")
+    {_criteria}.add("impossible", {_trigger})
+    {_json}.add("criteria", {_criteria})
+    {_json}.add("display", {_display})
+    
+    Bukkit.getUnsafe().loadAdvancement({_id}, {_json}.toString())
+    set {_advancement} to Bukkit.getAdvancement({_id})
+    set {_progress} to {_p}.getAdvancementProgress({_advancement})
+    
+    loop ...{_progress}.getRemainingCriteria():
+        {_progress}.awardCriteria(loop-value)
+    
+    wait 20 tick:
+        loop ...{_progress}.getAwardedCriteria():
+            {_progress}.revokeCriteria(loop-value)
+        Bukkit.getUnsafe().removeAdvancement({_id})
+
+
+on player move:
+    {_biome} = "%biome of player%" in propercase
+    
+
+    if any:
+        {biome::%name of player%} is not {_biome}
+        {biome::%name of player%} is not set
+    then:
+        {biome::%name of player%} = {_biome}
+
+        if any:
+            (ticks of time since {biome::%name of player%::cd}) > 0
+            (ticks of time since {biome::%name of player%::cd}) is not set
+        then:
+            {biome::%name of player%::cd} = 6 seconds later
+            add "<dark_green><b><u>Biome" to {_t::*}
+            add "<green>%{_biome}%" to {_t::*}
+            sendToast(player, "EMERALD", "TASK", join {_t::*} with "<newline><reset>")
+    

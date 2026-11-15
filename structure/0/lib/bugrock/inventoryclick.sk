@@ -1,0 +1,27 @@
+
+# Skript Reflect, SkriptLocal
+# Temporary solution to modify fast-move custom item (mmoitems)
+# to a right-click inventory action
+
+import:
+    org.bukkit.event.inventory.InventoryClickEvent
+    org.bukkit.event.inventory.ClickType
+    org.bukkit.event.inventory.InventoryAction
+
+
+on load:
+    {-$actionField} = InventoryClickEvent.class.getDeclaredField("action").setAccessible(true)
+    {-$actionField} = InventoryClickEvent.class.getDeclaredField("click").setAccessible(true)
+
+
+on inventory click with priority lowest:
+    raw unformatted name of player starts with "." # Bedrock player
+    event-inventory action is instant move
+
+    {_type} = string tag "minecraft:custom_data;MMOITEMS_ITEM_TYPE" of nbt of event-item
+    {_id}   = string tag "minecraft:custom_data;MMOITEMS_ITEM_ID"   of nbt of event-item
+    {_type} is set
+    {_id}   is set
+
+    {-$actionField}.set(event, InventoryAction.PICKUP_HALF)
+    {-$actionField}.set(event, ClickType.RIGHT)

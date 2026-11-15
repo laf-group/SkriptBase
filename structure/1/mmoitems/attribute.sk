@@ -1,0 +1,132 @@
+
+# Skript Reflect, MMOItems
+# Collections of MMOItems player-attribute helper
+
+import:
+    org.bukkit.event.inventory.InventoryCreativeEvent
+
+
+on load:
+    {-$aggressive} = false # Aggressive item-reupdate
+    {-$module} = "MIPlayerAttribute"
+    send info "%{-G:pass} . {-$module}% loaded"
+
+
+on inventory click:
+    event is not instance of InventoryCreativeEvent
+
+    {_type} = string tag "minecraft:custom_data;MMOITEMS_ITEM_TYPE" of nbt compound of (tool of player)
+    {_id}   = string tag "minecraft:custom_data;MMOITEMS_ITEM_ID" of nbt compound of (tool of player)
+    
+    {_type} is set
+    {_id}   is set
+
+    {debug::*} doesn't contain player
+    tool of player = mmoitemsReset(tool of player, player)
+
+
+on inventory click:
+    event is not instance of InventoryCreativeEvent
+    {_type} = string tag "minecraft:custom_data;MMOITEMS_ITEM_TYPE" of nbt compound of (event-slot)
+    {_id}   = string tag "minecraft:custom_data;MMOITEMS_ITEM_ID" of nbt compound of (event-slot)
+    if all:
+        {_type} is set
+        {_id}   is set
+    then:
+        {debug::*} doesn't contain player
+        event-slot = mmoitemsReset(event-slot, player)
+    checkHeldItem(player)
+
+
+on held item change:
+    {_type} = string tag "minecraft:custom_data;MMOITEMS_ITEM_TYPE" of nbt compound of (tool of player)
+    {_id}   = string tag "minecraft:custom_data;MMOITEMS_ITEM_ID" of nbt compound of (tool of player)
+    if all:
+        {_type} is set
+        {_id}   is set
+    then:
+        {debug::*} doesn't contain player
+        tool of player = mmoitemsReset(tool of player, player)
+    wait 1 ticks
+    checkHeldItem(player)
+
+
+on player arm swing:
+    if {-$aggressive} is true:
+        {_type} = string tag "minecraft:custom_data;MMOITEMS_ITEM_TYPE" of nbt compound of (tool of player)
+        {_id}   = string tag "minecraft:custom_data;MMOITEMS_ITEM_ID" of nbt compound of (tool of player)
+        if all:
+            {_type} is set
+            {_id}   is set
+        then:
+            tool of player = mmoitemsReset(tool of player, player)
+    checkHeldItem(player)
+
+
+on player pickup:
+    wait 1 ticks
+    checkHeldItem(player)
+
+
+on player drop:
+    wait 1 ticks
+    checkHeldItem(player)
+
+
+
+local function checkHeldItem(p: player) :: object:
+    {_type} = string tag "minecraft:custom_data;MMOITEMS_ITEM_TYPE" of nbt compound of (tool of {_p})
+    {_id}   = string tag "minecraft:custom_data;MMOITEMS_ITEM_ID"   of nbt compound of (tool of {_p})
+
+    {_vanillaAttack} = string tag "minecraft:custom_data;MMOITEMS_VANILLA_ATTACK" of nbt compound of (tool of {_p})
+    {_customSpeed}   = string tag "minecraft:custom_data;MMOITEMS_CUSTOM_SPEED"   of nbt compound of (tool of {_p})
+    {_spamAttack}    = string tag "minecraft:custom_data;MMOITEMS_SPAM_ATTACK"    of nbt compound of (tool of {_p})
+    {_blockBreak}    = string tag "minecraft:custom_data;MMOITEMS_BLOCK_BREAK"    of nbt compound of (tool of {_p})
+
+    {_attackSpeedStats} = double tag "minecraft:custom_data;MMOITEMS_ATTACK_SPEED" of nbt compound of (tool of {_p})
+
+    if {_vanillaAttack} is "NO":
+        entity interaction range attribute of {_p} = -100
+    else:
+        entity interaction range attribute of {_p} = 3
+
+
+    if {_id} is set:
+        if {_spamAttack} is "NO":
+            tool of {_p} = setSpamAttack(tool of {_p}, false, {_attackSpeedStats} ? 4)
+        # else:
+        #     tool of {_p} = setSpamAttack(tool of {_p}, true, {_attackSpeedStats} ? 4)
+
+        if {_blockBreak} is "NO":
+            tool of {_p} = setBlockBreak(tool of {_p}, false)
+        # else:
+        #     tool of {_p} = setBlockBreak(tool of {_p}, true)
+
+    wait 1 tick:
+        if {_attackSpeedStats} is set:
+            {_customSpeed} is not set
+            attack speed attribute of {_p} = 0
+        else:
+            attack speed attribute of {_p} = 4
+
+
+local function setSpamAttack(item: itemstack, state: boolean = false, atkspd: number = 4, duration: integer = 6) :: object:
+    {_swingSpeed} = (20.0 / {_atkspd}) + 1.0
+
+    {_nbt} = nbt compound from "{""minecraft:swing_animation"":{duration:%{_swingSpeed}%}}"
+    add {_nbt} to nbt of {_item}
+
+    minimum attack charge of {_item} = 1.0 if {_state} is false else 0.0
+
+    return {_item}
+
+
+local function setBlockBreak(item: itemstack, state: boolean = false) :: object:
+    if {_state} is false:
+        apply piercing weapon component to {_item}:
+            deals_knockback: false
+            dismounts: false
+    else:
+        delete compound tag "minecraft:piercing_weapon" of nbt of {_item}
+
+    return {_item}

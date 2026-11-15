@@ -1,0 +1,38 @@
+
+# Skript Reflect, MythicLib
+# Unsafe operation unregister MythicLib listeners
+# This aggresively removes Critical and Elemental Damage
+# Also disables AuraSkill's Critical Damage for same reason
+
+# TODO
+# Create MythicMob damage event -> MythicLib/MMOItems bridge instead
+
+import: 
+    org.bukkit.Bukkit
+    org.bukkit.event.HandlerList
+
+
+on load:
+    {-$module} = "MLUnregisterInvasiveListener"
+    send info "%{-G:pass} . {-$module}% loaded"
+
+    add "io.lumine.mythic.lib.listener.PvpListener" to {-mllistener::unregister::*}
+    add "io.lumine.mythic.lib.listener.ElementalDamage" to {-mllistener::unregister::*}
+    add "io.lumine.mythic.lib.listener.DamageReduction" to {-mllistener::unregister::*}
+    add "io.lumine.mythic.lib.listener.CustomProjectileDamage" to {-mllistener::unregister::*}
+    add "io.lumine.mythic.lib.listener.event.AttackEventListener" to {-mllistener::unregister::*}
+    mythiclibUnregisterInvasiveListener()
+
+
+local function mythiclibUnregisterInvasiveListener() :: object:
+    {_ml} = Bukkit.getPluginManager().getPlugin("MythicLib")
+    {_f} = 0
+
+    for {_handlerList} in ...HandlerList.getRegisteredListeners({_ml}):
+        {_listener} = {_handlerList}.getListener()
+
+        if {-mllistener::unregister::*} contains {_listener}.getClass().getName():
+            send info "Unregistering " . {_listener}.getClass().getName()
+            {_f}++
+            HandlerList.unregisterAll({_listener})
+    

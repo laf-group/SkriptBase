@@ -1,0 +1,18 @@
+
+# Skript Reflect
+# Base64 encode decode syntax
+
+import:
+    java.util.Base64
+    java.nio.charset.StandardCharsets
+    java.lang.String
+
+
+expression encode %string% (in|with|using) base64:
+    get:
+        return Base64.getEncoder().encodeToString((expr-1 ? "").getBytes(StandardCharsets.UTF_8))
+
+
+expression decode %string% (in|with|using) base64:
+    get:
+        return new String(Base64.getDecoder().decode((expr-1 ? "")), StandardCharsets.UTF_8)

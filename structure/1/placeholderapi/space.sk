@@ -1,0 +1,8 @@
+
+on load:
+    {-$module} = "PAPISpace"
+    send info "%{-G:pass} . {-$module}% loaded"
+
+
+function space(amount: integer) :: object:
+    return (join ("<reset> <reset>") with "") repeated {_amount} times
