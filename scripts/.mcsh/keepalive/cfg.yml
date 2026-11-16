@@ -1,10 +1,9 @@
-i:
-    'mix':
-        e: true
-        u: 0a5509c2-91a3-44e9-9c4d-c2784ed9b6d7
-    'hub':
-        e: true
-        u: 5b3e7a68-ef17-43cd-9dfc-60ab318b9428
-    'ffa':
-        e: true
-        u: 60caa5db-cc75-4251-95e6-d953176669b7
+'mix':
+    e: true
+    u: 0a5509c2-91a3-44e9-9c4d-c2784ed9b6d7
+'hub':
+    e: true
+    u: 5b3e7a68-ef17-43cd-9dfc-60ab318b9428
+'ffa':
+    e: true
+    u: 60caa5db-cc75-4251-95e6-d953176669b7
