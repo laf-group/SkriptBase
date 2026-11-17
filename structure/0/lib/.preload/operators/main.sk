@@ -9,17 +9,17 @@ import:
     ch.njol.skript.lang.Variable
 
 
-effect (%object|objects%)[ ](=|->|=>|==)[ ]%objects%:
+effect %objects%[ ](=|->|=>|==)[ ]%objects%:
     trigger:
         set (raw expression of expr-1) to expr-2
 
 
-effect (%object|objects%)[ ]+=[ ]%objects%:
+effect %objects%[ ]+=[ ]%objects%:
     trigger:
         add expr-2 to (raw expression of expr-1)
 
 
-effect (%object|objects%)[ ]-=[ ]%objects%:
+effect %objects%[ ]-=[ ]%objects%:
     trigger:
         remove expr-2 from (raw expression of expr-1)
 

@@ -1,7 +1,7 @@
 
 on command "/ml", "/mythiclib", "/mythiclib:ml", "/mythiclib:mythiclib":
     wait 1 seconds
-    send info "%{-G:pass}% MythicLib reloaded, re-hooking MythicLib utilities"
+    send info "%{-G:pass}%MythicLib reloaded, re-hooking MythicLib utilities"
 
     {_name} = script.name()
     {_path} = script.nameAndPath()

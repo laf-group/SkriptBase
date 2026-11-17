@@ -1,9 +1,0 @@
-
-import:
-    net.Indyuce.mmoitems.api.event.MMOItemsReloadEvent
-
-
-on MMOItemsReloadEvent:
-    send info "%{-G:pass} . {-$module}% MMOItems reloaded, re-hooking MMOItems utilities"
-c
-    reload script {_path}

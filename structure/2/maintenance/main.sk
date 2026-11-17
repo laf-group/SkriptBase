@@ -8,9 +8,10 @@ on load:
     {_path} = script.nameAndPath()
     {_path} = {_path}.substring(0, length of {_path} - length of {_name})
     {_file} = "whitelist.yml"
-    {-$path} = "{_path} . "/" . {_file}" # Path to config
+    {-$path} = "plugins/Skript/scripts/" . {_path} . {_file} # Path to config
+    send info {-$path}
 
-    {-$default::*} = "Laughtr_", "ChairawanChannel" # Default values
+    {-$default::*} = "Laughtr_" # Default values
     {-$allowed::*} = {_} # Initialization
     {-$config} = yml({-$path}) # Load config
 
@@ -45,7 +46,7 @@ command /maintenancer [<args: text>]:
     permission: *
     trigger:
         {_arg::*} = {_args} split at " "
-        {_action} to {_arg::1} ? "help" # default = /mt help
+        {_action} = {_arg::1} ? "help" # default = /mt help
 
         if {_action} is "help":
             add formatted "<#71bd34><st>                                                 <reset>" to {_t::*}
@@ -67,7 +68,7 @@ command /maintenancer [<args: text>]:
             {-$config}.set("enabled", {-$status})
             {-$config}.save({-$path})
 
-            add formatted "" . {-c::prefix} . " <#adce54>Maintenancer is enabled" to {_t::*}
+            add formatted "" . {-G:prefix} . " <#adce54>Maintenancer is enabled" to {_t::*}
             send formatted join {_t::*} with newline to sender
             stop
         
@@ -77,7 +78,7 @@ command /maintenancer [<args: text>]:
             {-$config}.set("enabled", {-$status})
             {-$config}.save({-$path})
             
-            add formatted "" . {-c::prefix} . " <#bd2d2d>Maintenancer is disabled" to {_t::*}
+            add formatted "" . {-G:prefix} . " <#bd2d2d>Maintenancer is disabled" to {_t::*}
             send formatted join {_t::*} with newline to sender
             stop
         
@@ -87,19 +88,19 @@ command /maintenancer [<args: text>]:
             {_player} = {_arg::3}
 
             if {_subaction} is "all":
-                add formatted "" . {-c::prefix} . " <#adce54>Whitelisted: <#b0c5b9>" . (join {-$allowed::*} with ", ") to {_t::*}
+                add formatted "" . {-G:prefix} . " <#adce54>Whitelisted: <#b0c5b9>" . (join {-$allowed::*} with ", ") to {_t::*}
                 send formatted join {_t::*} with newline to sender
                 stop
 
 
             else if {_subaction} is "add":
                 if {_player} is not set:
-                    add formatted "" . {-c::prefix} . " <#bd2d2d>Argument player must be set" to {_t::*}
+                    add formatted "" . {-G:prefix} . " <#bd2d2d>Argument player must be set" to {_t::*}
                     send formatted join {_t::*} with newline to sender
                     stop
                 
                 if {-$allowed::*} contains {_player}:
-                    add formatted "" . {-c::prefix} . " <#bd2d2d>Player already whitelisted" to {_t::*}
+                    add formatted "" . {-G:prefix} . " <#bd2d2d>Player already whitelisted" to {_t::*}
                     send formatted join {_t::*} with newline to sender
                     stop
                 
@@ -107,19 +108,19 @@ command /maintenancer [<args: text>]:
                 {-$config}.set("whitelisted", {-$allowed::*})
                 {-$config}.save({-$path})
 
-                add formatted "" . {-c::prefix} . " <#adce54>Added player to maintenance whitelist" to {_t::*}
+                add formatted "" . {-G:prefix} . " <#adce54>Added player to maintenance whitelist" to {_t::*}
                 send formatted join {_t::*} with newline to sender
                 stop
 
 
             else if {_subaction} is "remove":
                 if {_player} is not set:
-                    add formatted "" . {-c::prefix} . " <#bd2d2d>Argument player must be set" to {_t::*}
+                    add formatted "" . {-G:prefix} . " <#bd2d2d>Argument player must be set" to {_t::*}
                     send formatted join {_t::*} with newline to sender
                     stop
                 
                 if {-$allowed::*} doesn't contain {_player}:
-                    add formatted "" . {-c::prefix} . " <#bd2d2d>Player is not whitelisted" to {_t::*}
+                    add formatted "" . {-G:prefix} . " <#bd2d2d>Player is not whitelisted" to {_t::*}
                     send formatted join {_t::*} with newline to sender
                     stop
                 
@@ -127,26 +128,26 @@ command /maintenancer [<args: text>]:
                 {-$config}.set("whitelisted", {-$allowed::*})
                 {-$config}.save({-$path})
 
-                add formatted "" . {-c::prefix} . " <#adce54>Removed player from maintenance whitelist" to {_t::*}
+                add formatted "" . {-G:prefix} . " <#adce54>Removed player from maintenance whitelist" to {_t::*}
                 send formatted join {_t::*} with newline to sender
                 stop
             
 
             else:
-                add formatted "" . {-c::prefix} . " <#bd2d2d>Incorrect usage" to {_t::*}
+                add formatted "" . {-G:prefix} . " <#bd2d2d>Incorrect usage" to {_t::*}
                 send formatted join {_t::*} with newline to sender
                 stop
         
 
         else if {_action} is "reload":
-            execute sender command "/skript reload /2/maintenance/"
-            add formatted "" . {-c::prefix} . " <#adce54>Maintenancer reloaded" to {_t::*}
+            execute sender command "/skript reload %current script%"
+            add formatted "" . {-G:prefix} . " <#adce54>Maintenancer reloaded" to {_t::*}
             send formatted join {_t::*} with newline to sender
             stop
 
 
         else:
-            add formatted "" . {-c::prefix} . " <#bd2d2d>Incorrect usage" to {_t::*}
+            add formatted "" . {-G:prefix} . " <#bd2d2d>Incorrect usage" to {_t::*}
             send formatted join {_t::*} with newline to sender
             stop
 
@@ -155,7 +156,7 @@ on connect:
     {-$status} is true
     {-$allowed::*} doesn't contain (name of player)
     
-    add formatted {-c::prefix} to {_t::*}
+    add formatted {-G:prefix} to {_t::*}
     add formatted "<#bd2d2d>Server in maintenance mode" to {_t::*}
     add formatted "<#bd2d2d>You are not whitelisted" to {_t::*}
     kick player due to formatted join {_t::*} with newline

@@ -26,7 +26,8 @@ function perms(player: offline player, action: string = "set", node: string, val
     {_user} = {$luckperms}.getUserManager().getUser({_uuid})
     
     if {_user} is not set:
-        throw new exception "[LUCKPERMS] Could not load user data."
+        throw runtime error "[LUCKPERMS] Could not load user data."
+        
         return {_}
     
     switch {_action}:
@@ -53,7 +54,7 @@ function getprimarygroup(player: offline player) :: object:
     {_user} = {$luckperms}.getUserManager().getUser({_uuid})
     
     if {_user} is not set:
-        throw new exception "[LUCKPERMS] Could not load user data."
+        throw runtime error "[LUCKPERMS] Could not load user data."
         return {_}
     
     {_primaryGroup} = {_user}.getPrimaryGroup()

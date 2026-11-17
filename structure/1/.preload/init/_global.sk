@@ -3,7 +3,7 @@
 # Init -> Load Global (G:) Colors, Prefix
 
 on load:
-    {-G:prefix} = formatted ("<gradient:#ffc65d:#ece57e><b>" . "Laf" in smallcase)
+    {-G:prefix} = formatted ("<gradient:#ffc65d:#ece57e><b>" . ("Laf" in smallcase))
     {-G:error} = formatted "<#d43c3c>"
     {-G:warn} = formatted "<#ebb062>"
     {-G:pass} = formatted "<#77e76d>"

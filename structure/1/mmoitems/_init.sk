@@ -1,10 +1,10 @@
 
 import:
-    io.lumine.mythic.bukkit.events.MythicReloadedEvent
+    net.Indyuce.mmoitems.api.event.MMOItemsReloadEvent
 
 
-on MythicReloadedEvent:
-    send info "%{-G:pass}% MythicMobs reloaded, re-hooking MythicMobs utilities"
+on MMOItemsReloadEvent:
+    send info "%{-G:pass}%MMOItems reloaded, re-hooking MMOItems utilities"
 
     {_name} = script.name()
     {_path} = script.nameAndPath()
